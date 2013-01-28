@@ -8,10 +8,26 @@
         <!-- which version of Jenkins is this plugin built against? -->
     </parent>
 
-    <groupId>jenkins.plugins</groupId>
     <artifactId>mttr</artifactId>
     <version>1.0</version>
     <packaging>hpi</packaging>
+    <name>mean time to repair plugin</name>
+    <description>statistics job builds mean time to repair</description>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/MTTR+Plugin</url>
+
+    <developers>
+        <developer>
+            <id>zhaozhiming</id>
+            <name>Zhao zhiming</name>
+            <email>kingzzm1982@sina.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:ssh://github.com/zhaozhiming/mttr.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/zhaozhiming/mttr.git</developerConnection>
+        <url>https://github.com/zhaozhiming/mttr.git</url>
+    </scm>
 
     <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
     <repositories>
