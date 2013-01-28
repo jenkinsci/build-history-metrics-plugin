@@ -1,0 +1,1 @@
+a jenkins plugin, statistics job average failed time.
