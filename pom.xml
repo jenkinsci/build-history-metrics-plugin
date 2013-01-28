@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>jenkins.plugins</groupId>
-    <artifactId>MTTR</artifactId>
+    <artifactId>mttr</artifactId>
     <version>1.0</version>
     <packaging>hpi</packaging>
 
