@@ -1,1 +1,1 @@
-a jenkins plugin, statistics job average failed time.
+a jenkins plugin, statistics job builds mean time to repair.
