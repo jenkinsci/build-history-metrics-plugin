@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>mttr</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <name>mean time to repair plugin</name>
     <description>statistics job builds mean time to repair</description>
