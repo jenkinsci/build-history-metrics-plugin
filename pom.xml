@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.466</version>
+        <version>1.579</version>
         <!-- which version of Jenkins is this plugin built against? -->
     </parent>
 
@@ -13,6 +13,15 @@
     <name>mean time to repair plugin</name>
     <description>statistics job builds mean time to repair</description>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/MTTR+Plugin</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <developers>
         <developer>
