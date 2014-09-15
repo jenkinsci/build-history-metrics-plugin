@@ -21,7 +21,7 @@ public class ReadUtil {
     public static Properties getJobProperties(Job job) {
         try {
             File rootDir = job.getRootDir();
-            File file = new File(rootDir.getAbsolutePath() + File.separator + StoreUtil.BANGKOU_PROPERTIES);
+            File file = new File(rootDir.getAbsolutePath() + File.separator + StoreUtil.MTTR_PROPERTY_FILE);
             Properties properties = new Properties();
             properties.load(new FileInputStream(file));
             return properties;

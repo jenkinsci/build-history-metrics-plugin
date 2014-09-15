@@ -5,27 +5,26 @@ import hudson.Util;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class JobFailedTimeInfo {
+public class JobFailedTimeInfo implements AggregateBuildMetric {
     private static final Logger LOGGER = Logger.getLogger(JobFailedTimeInfo.class.getName());
 
     public static final String BUILD_SUCCESS = "SUCCESS";
+    public static final String BUILD_FAILED = "FAILED";
     private int buildCount;
     private long totalFailedTime;
     private String name;
 
-    public JobFailedTimeInfo(String name) {
+    public JobFailedTimeInfo(String name, List<BuildMessage> builds) {
         this.name = name;
+        initialize(builds);
     }
 
+    @Override
     public int getBuildCount() {
         return buildCount;
     }
 
-    public long getTotalFailedTime() {
-        return totalFailedTime;
-    }
-
-    public void recordFailedTimeInfo(List<BuildMessage> builds) {
+    private void initialize(List<BuildMessage> builds) {
         long failedBuildDate = 0;
         for (BuildMessage build : builds) {
             String result = build.getResult();
@@ -51,14 +50,16 @@ public class JobFailedTimeInfo {
         LOGGER.info(String.format("%s totalFailedTime : %s%n", name,
                 Util.getPastTimeString(totalFailedTime)));
         LOGGER.info(String.format("%s average failed  time : %s%n", name,
-                Util.getPastTimeString(calcAvgFailedTime())));
+                Util.getPastTimeString(calculateMetric())));
     }
 
-    public long calcAvgFailedTime() {
+    @Override
+    public long calculateMetric() {
         if (buildCount == 0) return 0L;
         return totalFailedTime / buildCount;
     }
 
+    @Override
     public String getName() {
         return name;
     }

@@ -5,6 +5,7 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.model.*;
 import hudson.model.listeners.RunListener;
+import jenkins.plugins.model.AggregateBuildMetric;
 import jenkins.plugins.model.BuildMessage;
 import jenkins.plugins.model.JobFailedTimeInfo;
 import jenkins.plugins.util.ReadUtil;
@@ -19,9 +20,9 @@ public class MTTRAction implements Action {
 
     private static final Logger LOGGER = Logger.getLogger(MTTRAction.class.getName());
 
-    public static final String LAST_7_DAYS = "last7days";
-    public static final String LAST_30_DAYS = "last30days";
-    public static final String ALL_BUILDS = "allBuilds";
+    public static final String MTTR_LAST_7_DAYS = "last7days";
+    public static final String MTTR_LAST_30_DAYS = "last30days";
+    public static final String MTTR_ALL_BUILDS = "allBuilds";
     public static final String ALL_BUILDS_FILE_NAME = "all_builds.mr";
 
     private AbstractProject project;
@@ -52,11 +53,11 @@ public class MTTRAction implements Action {
         }
 
         List<String> result = Lists.newArrayList();
-        long last7days = Long.valueOf(properties.get(LAST_7_DAYS).toString());
+        long last7days = Long.valueOf(properties.get(MTTR_LAST_7_DAYS).toString());
         result.add(Messages.last7DaysBuildsResult(Util.getPastTimeString(last7days)));
-        long last30days = Long.valueOf(properties.get(LAST_30_DAYS).toString());
+        long last30days = Long.valueOf(properties.get(MTTR_LAST_30_DAYS).toString());
         result.add(Messages.last30DaysBuildsResult(Util.getPastTimeString(last30days)));
-        long allBuilds = Long.valueOf(properties.get(ALL_BUILDS).toString());
+        long allBuilds = Long.valueOf(properties.get(MTTR_ALL_BUILDS).toString());
         result.add(Messages.allBuildsResult(Util.getPastTimeString(allBuilds)));
         return result;
     }
@@ -84,16 +85,13 @@ public class MTTRAction implements Action {
 
             List<BuildMessage> buildMessages = ReadUtil.getBuildMessageFrom(storeFile);
 
-            JobFailedTimeInfo last7DayInfo = new JobFailedTimeInfo(LAST_7_DAYS);
-            last7DayInfo.recordFailedTimeInfo(cutListByAgoDays(buildMessages, -7));
+            AggregateBuildMetric last7DayInfo = new JobFailedTimeInfo(MTTR_LAST_7_DAYS, cutListByAgoDays(buildMessages, -7));
 
-            JobFailedTimeInfo last30DayInfo = new JobFailedTimeInfo(LAST_30_DAYS);
-            last30DayInfo.recordFailedTimeInfo(cutListByAgoDays(buildMessages, -30));
+            AggregateBuildMetric last30DayInfo = new JobFailedTimeInfo(MTTR_LAST_30_DAYS, cutListByAgoDays(buildMessages, -30));
 
-            JobFailedTimeInfo allFailedInfo = new JobFailedTimeInfo(ALL_BUILDS);
-            allFailedInfo.recordFailedTimeInfo(buildMessages);
+            AggregateBuildMetric allFailedInfo = new JobFailedTimeInfo(MTTR_ALL_BUILDS, buildMessages);
 
-            StoreUtil.storeJobFailedInfo(run, last7DayInfo, last30DayInfo, allFailedInfo);
+            StoreUtil.storeBuildMetric(run, last7DayInfo, last30DayInfo, allFailedInfo);
         }
 
         private List<BuildMessage> cutListByAgoDays(List<BuildMessage> builds, int daysAgo) {

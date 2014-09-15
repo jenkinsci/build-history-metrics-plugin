@@ -16,7 +16,7 @@ public class AllBuildsResultColumn extends ListViewColumn {
     }
 
     public String getResult(Job job) throws IOException {
-        return ReadUtil.getColumnResult(job, MTTRAction.ALL_BUILDS);
+        return ReadUtil.getColumnResult(job, MTTRAction.MTTR_ALL_BUILDS);
     }
 
     @Extension

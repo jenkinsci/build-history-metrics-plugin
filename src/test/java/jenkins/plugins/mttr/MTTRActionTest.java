@@ -57,14 +57,14 @@ public class MTTRActionTest {
     public void should_store_failed_properties_file_correct() throws Exception {
         project.scheduleBuild2(0).get();
 
-        File propertyFile = new File(rootDirectory + StoreUtil.BANGKOU_PROPERTIES);
+        File propertyFile = new File(rootDirectory + StoreUtil.MTTR_PROPERTY_FILE);
         assertTrue(propertyFile.exists());
 
         List<String> lines = Files.readLines(propertyFile, Charset.forName(UTF_8));
 
-        assertThat(lines.get(0), is(String.format("%s=0", MTTRAction.LAST_7_DAYS)));
-        assertThat(lines.get(1), is(String.format("%s=0", MTTRAction.LAST_30_DAYS)));
-        assertThat(lines.get(2), is(String.format("%s=0", MTTRAction.ALL_BUILDS)));
+        assertThat(lines.get(0), is(String.format("%s=0", MTTRAction.MTTR_LAST_7_DAYS)));
+        assertThat(lines.get(1), is(String.format("%s=0", MTTRAction.MTTR_LAST_30_DAYS)));
+        assertThat(lines.get(2), is(String.format("%s=0", MTTRAction.MTTR_ALL_BUILDS)));
     }
 
     @Test

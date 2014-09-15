@@ -3,14 +3,19 @@ package jenkins.plugins.util;
 
 import hudson.model.*;
 import hudson.util.RunList;
+import jenkins.plugins.model.AggregateBuildMetric;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.*;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -87,6 +92,7 @@ public class StoreUtilTest {
         Mockito.when(build.getParent()).thenReturn(job);
 
         //Act
+        assertFalse("The file should not exist before the test runs",deletedFile.exists());
         StoreUtil.storeBuildMessages(deletedFile, build);
 
         //Assert
@@ -103,12 +109,47 @@ public class StoreUtilTest {
                 "89,67,SUCCESS", secondBuild);
     }
 
-
     @Test
     public void testStoreJobFailedInfo() throws Exception {
+        //Arrange
+        File rootFolder = temporaryFolder.newFolder();
 
+        Job job = Mockito.mock(Job.class);
+        Mockito.when(job.getRootDir()).thenReturn(rootFolder);
+
+        AbstractBuild build = Mockito.mock(AbstractBuild.class);
+        Mockito.when(build.getParent()).thenReturn(job);
+
+        AggregateBuildMetric info = Mockito.mock(AggregateBuildMetric.class);
+        Mockito.when(info.calculateMetric()).thenReturn(76543210L);
+        Mockito.when(info.getName()).thenReturn("last7");
+
+        AggregateBuildMetric info2 = Mockito.mock(AggregateBuildMetric.class);
+        Mockito.when(info2.calculateMetric()).thenReturn(3210L);
+        Mockito.when(info2.getName()).thenReturn("last30");
+
+        //Act
+        StoreUtil.storeBuildMetric(build, info, info2);
+
+        //Assert
+        Path propertiesFile = Paths.get(rootFolder.getAbsolutePath(), "mttr.properties");
+        assertTrue("The mttr.properties file is missing",
+                Files.exists(propertiesFile) );
+
+        List<String> lines = Files.readAllLines(propertiesFile);
+        assertEquals("Should have only 2 lines",2,lines.size());
+        assertEquals("The first JobFailedTimeInfo is wrong","last7=76543210",lines.get(0));
+        assertEquals("The second JobFailedTimeInfo is wrong","last30=3210",lines.get(1));
     }
 
+    private boolean fileExistsInFolder(final String filename, File folder) {
+        return folder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.equals(filename);
+            }
+        }).length == 1;
+    }
     private int getLinesInFile(File file) throws IOException {
         LineNumberReader lnr = new LineNumberReader(new FileReader(file));
         lnr.skip(Long.MAX_VALUE);

@@ -16,7 +16,7 @@ public class Last30DaysResultColumn extends ListViewColumn {
     }
 
     public String getResult(Job job) throws IOException {
-        return ReadUtil.getColumnResult(job, MTTRAction.LAST_30_DAYS);
+        return ReadUtil.getColumnResult(job, MTTRAction.MTTR_LAST_30_DAYS);
     }
 
     @Extension

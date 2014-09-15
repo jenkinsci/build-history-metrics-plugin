@@ -1,22 +1,23 @@
 package jenkins.plugins.util;
 
-import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.util.RunList;
-import jenkins.plugins.model.JobFailedTimeInfo;
+import jenkins.plugins.model.AggregateBuildMetric;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
 public class StoreUtil {
 
     private static final Logger LOGGER = Logger.getLogger(StoreUtil.class.getName());
-    public static final String BANGKOU_PROPERTIES = "mttr.properties";
+    public static final String MTTR_PROPERTY_FILE = "mttr.properties";
     public static final String UTF_8 = "UTF-8";
 
     public static void storeBuildMessages(File storeFile, Run build) {
@@ -31,26 +32,20 @@ public class StoreUtil {
         }
     }
 
-    public static void storeJobFailedInfo(Run run, JobFailedTimeInfo... jobFailedTimeInfos) {
-
-        StringBuilder filePath = new StringBuilder();
+    public static void storeBuildMetric(Run run, AggregateBuildMetric... buildMetrics) {
         try {
-            filePath.append(run.getParent().getRootDir().getAbsolutePath())
-                    .append(File.separator).append(BANGKOU_PROPERTIES);
-
-            if (Strings.isNullOrEmpty(filePath.toString())) {
-                LOGGER.warning("file path is empty");
-                return;
-            }
-
-            File file = new File(filePath.toString());
 
             StringBuilder fileContent = new StringBuilder();
-            for (JobFailedTimeInfo jobFailedTimeInfo : jobFailedTimeInfos) {
-                fileContent.append(jobFailedTimeInfo.getName()).append("=")
-                        .append(jobFailedTimeInfo.calcAvgFailedTime()).append("\n");
+
+            for (AggregateBuildMetric buildMetric : buildMetrics) {
+                fileContent.append(buildMetric.getName()).append("=")
+                        .append(buildMetric.calculateMetric()).append("\n");
             }
-            Files.write(fileContent.toString(), file, Charset.forName(UTF_8));
+
+            //TODO Make the properties filename a param otherwise we overwrite it for every new metric
+            Path propertiesFile = Paths.get(run.getParent().getRootDir().getAbsolutePath(), MTTR_PROPERTY_FILE);
+            Files.write(fileContent.toString(), propertiesFile.toFile(), Charset.forName(UTF_8));
+
         } catch (IOException e) {
             LOGGER.warning(String.format("store property error:%s", e.getMessage()));
         }
