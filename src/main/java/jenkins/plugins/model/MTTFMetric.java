@@ -42,7 +42,7 @@ public class MTTFMetric implements AggregateBuildMetric {
     }
 
     @Override
-    public int getBuildCount() {
+    public int getOccurences() {
         return occurences;
     }
 

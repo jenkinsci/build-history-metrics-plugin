@@ -5,6 +5,7 @@ import hudson.model.Job;
 import hudson.model.Run;
 import hudson.util.RunList;
 import jenkins.plugins.model.AggregateBuildMetric;
+import jenkins.plugins.model.MTTFMetric;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class StoreUtil {
 
     private static final Logger LOGGER = Logger.getLogger(StoreUtil.class.getName());
     public static final String MTTR_PROPERTY_FILE = "mttr.properties";
+    public static final String MTTF_PROPERTY_FILE = "mttf.properties";
     public static final String UTF_8 = "UTF-8";
 
     public static void storeBuildMessages(File storeFile, Run build) {
@@ -32,7 +34,7 @@ public class StoreUtil {
         }
     }
 
-    public static void storeBuildMetric(Run run, AggregateBuildMetric... buildMetrics) {
+    public static void storeBuildMetric(Class metricType, Run run, AggregateBuildMetric... buildMetrics) {
         try {
 
             StringBuilder fileContent = new StringBuilder();
@@ -42,8 +44,8 @@ public class StoreUtil {
                         .append(buildMetric.calculateMetric()).append("\n");
             }
 
-            //TODO Make the properties filename a param otherwise we overwrite it for every new metric
-            Path propertiesFile = Paths.get(run.getParent().getRootDir().getAbsolutePath(), MTTR_PROPERTY_FILE);
+            String propertyFilename = metricType==MTTFMetric.class?MTTF_PROPERTY_FILE:MTTR_PROPERTY_FILE;
+            Path propertiesFile = Paths.get(run.getParent().getRootDir().getAbsolutePath(), propertyFilename);
             Files.write(fileContent.toString(), propertiesFile.toFile(), Charset.forName(UTF_8));
 
         } catch (IOException e) {

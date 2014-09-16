@@ -4,6 +4,8 @@ package jenkins.plugins.util;
 import hudson.model.*;
 import hudson.util.RunList;
 import jenkins.plugins.model.AggregateBuildMetric;
+import jenkins.plugins.model.MTTFMetric;
+import jenkins.plugins.model.MTTRMetric;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -110,7 +112,7 @@ public class StoreUtilTest {
     }
 
     @Test
-    public void testStoreJobFailedInfo() throws Exception {
+    public void testStoreMTTRInfo() throws Exception {
         //Arrange
         File rootFolder = temporaryFolder.newFolder();
 
@@ -129,7 +131,7 @@ public class StoreUtilTest {
         Mockito.when(info2.getName()).thenReturn("last30");
 
         //Act
-        StoreUtil.storeBuildMetric(build, info, info2);
+        StoreUtil.storeBuildMetric(MTTRMetric.class, build, info, info2);
 
         //Assert
         Path propertiesFile = Paths.get(rootFolder.getAbsolutePath(), "mttr.properties");
@@ -138,8 +140,41 @@ public class StoreUtilTest {
 
         List<String> lines = Files.readAllLines(propertiesFile);
         assertEquals("Should have only 2 lines",2,lines.size());
-        assertEquals("The first JobFailedTimeInfo is wrong","last7=76543210",lines.get(0));
-        assertEquals("The second JobFailedTimeInfo is wrong","last30=3210",lines.get(1));
+        assertEquals("The first  MTTR metric is wrong","last7=76543210",lines.get(0));
+        assertEquals("The second  MTTR metric is wrong","last30=3210",lines.get(1));
+    }
+
+    @Test
+    public void testStoreMTTFInfo() throws Exception {
+        //Arrange
+        File rootFolder = temporaryFolder.newFolder();
+
+        Job job = Mockito.mock(Job.class);
+        Mockito.when(job.getRootDir()).thenReturn(rootFolder);
+
+        AbstractBuild build = Mockito.mock(AbstractBuild.class);
+        Mockito.when(build.getParent()).thenReturn(job);
+
+        AggregateBuildMetric info = Mockito.mock(AggregateBuildMetric.class);
+        Mockito.when(info.calculateMetric()).thenReturn(76543210L);
+        Mockito.when(info.getName()).thenReturn("last7");
+
+        AggregateBuildMetric info2 = Mockito.mock(AggregateBuildMetric.class);
+        Mockito.when(info2.calculateMetric()).thenReturn(3210L);
+        Mockito.when(info2.getName()).thenReturn("last30");
+
+        //Act
+        StoreUtil.storeBuildMetric(MTTFMetric.class, build, info, info2);
+
+        //Assert
+        Path propertiesFile = Paths.get(rootFolder.getAbsolutePath(), "mttf.properties");
+        assertTrue("The mttf.properties file is missing",
+                Files.exists(propertiesFile) );
+
+        List<String> lines = Files.readAllLines(propertiesFile);
+        assertEquals("Should have only 2 lines",2,lines.size());
+        assertEquals("The first MTTF metric is wrong","last7=76543210",lines.get(0));
+        assertEquals("The second  MTTF metric is wrong","last30=3210",lines.get(1));
     }
 
     private boolean fileExistsInFolder(final String filename, File folder) {

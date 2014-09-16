@@ -72,6 +72,6 @@ public class MTTRMetricTest {
         MTTRMetric mttrMetric = new MTTRMetric("test", builds);
         assertEquals("Metric Name", "test", mttrMetric.getName());
         assertEquals("MTTR Metric", expectTime, mttrMetric.calculateMetric());
-        assertEquals("Build Count", expectCount, mttrMetric.getBuildCount());
+        assertEquals("Build Count", expectCount, mttrMetric.getOccurences());
     }
 }

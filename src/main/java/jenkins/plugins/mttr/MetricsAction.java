@@ -7,6 +7,7 @@ import hudson.model.*;
 import hudson.model.listeners.RunListener;
 import jenkins.plugins.model.AggregateBuildMetric;
 import jenkins.plugins.model.BuildMessage;
+import jenkins.plugins.model.MTTFMetric;
 import jenkins.plugins.model.MTTRMetric;
 import jenkins.plugins.util.ReadUtil;
 import jenkins.plugins.util.StoreUtil;
@@ -16,18 +17,23 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class MTTRAction implements Action {
+public class MetricsAction implements Action {
 
-    private static final Logger LOGGER = Logger.getLogger(MTTRAction.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MetricsAction.class.getName());
 
-    public static final String MTTR_LAST_7_DAYS = "last7days";
-    public static final String MTTR_LAST_30_DAYS = "last30days";
-    public static final String MTTR_ALL_BUILDS = "allBuilds";
+    public static final String MTTR_LAST_7_DAYS = "mttrLast7days";
+    public static final String MTTR_LAST_30_DAYS = "mttrLast30days";
+    public static final String MTTR_ALL_BUILDS = "mttrAllBuilds";
+
+    public static final String MTTF_LAST_7_DAYS = "mttfLast7days";
+    public static final String MTTF_LAST_30_DAYS = "mttfLast30days";
+    public static final String MTTF_ALL_BUILDS = "mttfAllBuilds";
+
     public static final String ALL_BUILDS_FILE_NAME = "all_builds.mr";
 
     private AbstractProject project;
 
-    public MTTRAction(AbstractProject project) {
+    public MetricsAction(AbstractProject project) {
         this.project = project;
     }
 
@@ -67,7 +73,7 @@ public class MTTRAction implements Action {
 
         @Override
         public Collection<? extends Action> createFor(AbstractProject target) {
-            return Collections.singleton(new MTTRAction(target));
+            return Collections.singleton(new MetricsAction(target));
         }
     }
 
@@ -85,13 +91,22 @@ public class MTTRAction implements Action {
 
             List<BuildMessage> buildMessages = ReadUtil.getBuildMessageFrom(storeFile);
 
-            AggregateBuildMetric last7DayInfo = new MTTRMetric(MTTR_LAST_7_DAYS, cutListByAgoDays(buildMessages, -7));
+            AggregateBuildMetric mttrLast7DayInfo = new MTTRMetric(MTTR_LAST_7_DAYS, cutListByAgoDays(buildMessages, -7));
 
-            AggregateBuildMetric last30DayInfo = new MTTRMetric(MTTR_LAST_30_DAYS, cutListByAgoDays(buildMessages, -30));
+            AggregateBuildMetric mttrLast30DayInfo = new MTTRMetric(MTTR_LAST_30_DAYS, cutListByAgoDays(buildMessages, -30));
 
-            AggregateBuildMetric allFailedInfo = new MTTRMetric(MTTR_ALL_BUILDS, buildMessages);
+            AggregateBuildMetric mttrAllFailedInfo = new MTTRMetric(MTTR_ALL_BUILDS, buildMessages);
 
-            StoreUtil.storeBuildMetric(run, last7DayInfo, last30DayInfo, allFailedInfo);
+            StoreUtil.storeBuildMetric(MTTRMetric.class, run,
+                    mttrLast7DayInfo, mttrLast30DayInfo, mttrAllFailedInfo);
+
+            AggregateBuildMetric mttfLast7DayInfo = new MTTFMetric(MTTF_LAST_7_DAYS, cutListByAgoDays(buildMessages, -7));
+
+            AggregateBuildMetric mttfLast30DayInfo = new MTTFMetric(MTTF_LAST_30_DAYS, cutListByAgoDays(buildMessages, -7));
+
+            AggregateBuildMetric mttfAllBuilds = new MTTFMetric(MTTF_ALL_BUILDS, cutListByAgoDays(buildMessages, -7));
+
+            StoreUtil.storeBuildMetric(MTTFMetric.class, run, mttfLast7DayInfo, mttfLast30DayInfo, mttfAllBuilds);
         }
 
         private List<BuildMessage> cutListByAgoDays(List<BuildMessage> builds, int daysAgo) {

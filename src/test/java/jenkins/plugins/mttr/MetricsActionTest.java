@@ -17,7 +17,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class MTTRActionTest {
+public class MetricsActionTest {
 
     private FreeStyleProject project;
     private String rootDirectory;
@@ -32,10 +32,10 @@ public class MTTRActionTest {
     }
 
     @Test
-    public void should_store_build_message_file_correct() throws Exception {
+    public void should_store_build_message_file_correctly() throws Exception {
         project.scheduleBuild2(0).get();
 
-        File buildsMessageFile = new File(rootDirectory + MTTRAction.ALL_BUILDS_FILE_NAME);
+        File buildsMessageFile = new File(rootDirectory + MetricsAction.ALL_BUILDS_FILE_NAME);
         assertTrue(buildsMessageFile.exists());
 
         List<String> lines = Files.readLines(buildsMessageFile, Charset.forName(UTF_8));
@@ -54,7 +54,7 @@ public class MTTRActionTest {
     }
 
     @Test
-    public void should_store_failed_properties_file_correct() throws Exception {
+    public void should_store_mttr_properties_file_correctly() throws Exception {
         project.scheduleBuild2(0).get();
 
         File propertyFile = new File(rootDirectory + StoreUtil.MTTR_PROPERTY_FILE);
@@ -62,9 +62,23 @@ public class MTTRActionTest {
 
         List<String> lines = Files.readLines(propertyFile, Charset.forName(UTF_8));
 
-        assertThat(lines.get(0), is(String.format("%s=0", MTTRAction.MTTR_LAST_7_DAYS)));
-        assertThat(lines.get(1), is(String.format("%s=0", MTTRAction.MTTR_LAST_30_DAYS)));
-        assertThat(lines.get(2), is(String.format("%s=0", MTTRAction.MTTR_ALL_BUILDS)));
+        assertThat(lines.get(0), is(String.format("%s=0", MetricsAction.MTTR_LAST_7_DAYS)));
+        assertThat(lines.get(1), is(String.format("%s=0", MetricsAction.MTTR_LAST_30_DAYS)));
+        assertThat(lines.get(2), is(String.format("%s=0", MetricsAction.MTTR_ALL_BUILDS)));
+    }
+
+    @Test
+    public void should_store_mttf_properties_file_correctly() throws Exception {
+        project.scheduleBuild2(0).get();
+
+        File propertyFile = new File(rootDirectory + StoreUtil.MTTF_PROPERTY_FILE);
+        assertTrue(propertyFile.exists());
+
+        List<String> lines = Files.readLines(propertyFile, Charset.forName(UTF_8));
+
+        assertThat(lines.get(0), is(String.format("%s=0", MetricsAction.MTTF_LAST_7_DAYS)));
+        assertThat(lines.get(1), is(String.format("%s=0", MetricsAction.MTTF_LAST_30_DAYS)));
+        assertThat(lines.get(2), is(String.format("%s=0", MetricsAction.MTTF_ALL_BUILDS)));
     }
 
     @Test
@@ -72,7 +86,7 @@ public class MTTRActionTest {
         project.scheduleBuild2(0).get();
         project.scheduleBuild2(1).get();
 
-        File buildsMessageFile = new File(rootDirectory + MTTRAction.ALL_BUILDS_FILE_NAME);
+        File buildsMessageFile = new File(rootDirectory + MetricsAction.ALL_BUILDS_FILE_NAME);
         buildsMessageFile.delete();
 
         project.scheduleBuild2(3).get();

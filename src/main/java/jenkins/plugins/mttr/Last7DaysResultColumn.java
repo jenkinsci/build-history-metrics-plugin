@@ -16,7 +16,7 @@ public class Last7DaysResultColumn extends ListViewColumn {
     }
 
     public String getResult(Job job) throws IOException {
-        return ReadUtil.getColumnResult(job, MTTRAction.MTTR_LAST_7_DAYS);
+        return ReadUtil.getColumnResult(job, MetricsAction.MTTR_LAST_7_DAYS);
     }
 
     @Extension
