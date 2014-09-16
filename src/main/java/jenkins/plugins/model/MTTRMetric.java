@@ -5,16 +5,15 @@ import hudson.Util;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class JobFailedTimeInfo implements AggregateBuildMetric {
-    private static final Logger LOGGER = Logger.getLogger(JobFailedTimeInfo.class.getName());
+public class MTTRMetric implements AggregateBuildMetric {
+    private static final Logger LOGGER = Logger.getLogger(MTTRMetric.class.getName());
 
-    public static final String BUILD_SUCCESS = "SUCCESS";
-    public static final String BUILD_FAILED = "FAILED";
+
     private int buildCount;
     private long totalFailedTime;
     private String name;
 
-    public JobFailedTimeInfo(String name, List<BuildMessage> builds) {
+    public MTTRMetric(String name, List<BuildMessage> builds) {
         this.name = name;
         initialize(builds);
     }
@@ -30,7 +29,7 @@ public class JobFailedTimeInfo implements AggregateBuildMetric {
             String result = build.getResult();
             if (result == null) continue;
 
-            if (!BUILD_SUCCESS.equals(result)) {
+            if (!BuildMessage.BUILD_SUCCESS.equals(result)) {
                 if (failedBuildDate != 0) continue;
 
                 failedBuildDate = build.getStartTime();

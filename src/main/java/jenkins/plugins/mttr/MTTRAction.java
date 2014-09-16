@@ -7,7 +7,7 @@ import hudson.model.*;
 import hudson.model.listeners.RunListener;
 import jenkins.plugins.model.AggregateBuildMetric;
 import jenkins.plugins.model.BuildMessage;
-import jenkins.plugins.model.JobFailedTimeInfo;
+import jenkins.plugins.model.MTTRMetric;
 import jenkins.plugins.util.ReadUtil;
 import jenkins.plugins.util.StoreUtil;
 
@@ -85,11 +85,11 @@ public class MTTRAction implements Action {
 
             List<BuildMessage> buildMessages = ReadUtil.getBuildMessageFrom(storeFile);
 
-            AggregateBuildMetric last7DayInfo = new JobFailedTimeInfo(MTTR_LAST_7_DAYS, cutListByAgoDays(buildMessages, -7));
+            AggregateBuildMetric last7DayInfo = new MTTRMetric(MTTR_LAST_7_DAYS, cutListByAgoDays(buildMessages, -7));
 
-            AggregateBuildMetric last30DayInfo = new JobFailedTimeInfo(MTTR_LAST_30_DAYS, cutListByAgoDays(buildMessages, -30));
+            AggregateBuildMetric last30DayInfo = new MTTRMetric(MTTR_LAST_30_DAYS, cutListByAgoDays(buildMessages, -30));
 
-            AggregateBuildMetric allFailedInfo = new JobFailedTimeInfo(MTTR_ALL_BUILDS, buildMessages);
+            AggregateBuildMetric allFailedInfo = new MTTRMetric(MTTR_ALL_BUILDS, buildMessages);
 
             StoreUtil.storeBuildMetric(run, last7DayInfo, last30DayInfo, allFailedInfo);
         }
