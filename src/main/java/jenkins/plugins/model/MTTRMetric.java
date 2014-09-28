@@ -1,6 +1,7 @@
 package jenkins.plugins.model;
 
 import hudson.Util;
+import hudson.model.Result;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -29,7 +30,7 @@ public class MTTRMetric implements AggregateBuildMetric {
             String result = build.getResult();
             if (result == null) continue;
 
-            if (!BuildMessage.BUILD_SUCCESS.equals(result)) {
+            if (!result.equals(Result.SUCCESS.toString())) {
                 if (failedBuildDate != 0) continue;
 
                 failedBuildDate = build.getStartTime();

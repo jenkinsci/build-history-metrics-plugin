@@ -109,11 +109,12 @@ public class MetricsAction implements Action {
 
             AggregateBuildMetric mttfLast7DayInfo = new MTTFMetric(MTTF_LAST_7_DAYS, cutListByAgoDays(buildMessages, -7));
 
-            AggregateBuildMetric mttfLast30DayInfo = new MTTFMetric(MTTF_LAST_30_DAYS, cutListByAgoDays(buildMessages, -7));
+            AggregateBuildMetric mttfLast30DayInfo = new MTTFMetric(MTTF_LAST_30_DAYS, cutListByAgoDays(buildMessages, -30));
 
-            AggregateBuildMetric mttfAllBuilds = new MTTFMetric(MTTF_ALL_BUILDS, cutListByAgoDays(buildMessages, -7));
+            AggregateBuildMetric mttfAllBuilds = new MTTFMetric(MTTF_ALL_BUILDS, buildMessages);
 
-            StoreUtil.storeBuildMetric(MTTFMetric.class, run, mttfLast7DayInfo, mttfLast30DayInfo, mttfAllBuilds);
+            StoreUtil.storeBuildMetric(MTTFMetric.class, run,
+                    mttfLast7DayInfo, mttfLast30DayInfo, mttfAllBuilds);
         }
 
         private List<BuildMessage> cutListByAgoDays(List<BuildMessage> builds, int daysAgo) {

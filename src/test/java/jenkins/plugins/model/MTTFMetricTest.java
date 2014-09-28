@@ -1,6 +1,7 @@
 package jenkins.plugins.model;
 
 import com.google.common.collect.Lists;
+import hudson.model.Result;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,21 +11,17 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by aidan on 16/09/14.
- */
 public class MTTFMetricTest {
     private static final long TODAY = new Date().getTime();
-    private static final BuildMessage FIRST_BUILD = new BuildMessage(TODAY, BuildMessage.BUILD_SUCCESS);
-    private static final BuildMessage SECOND_BUILD = new BuildMessage(TODAY + 1000, BuildMessage.BUILD_FAILED);
-    private static final BuildMessage THIRD_BUILD = new BuildMessage(TODAY + 2000, BuildMessage.BUILD_FAILED);
-    private static final BuildMessage FOURTH_BUILD = new BuildMessage(TODAY + 3000, BuildMessage.BUILD_SUCCESS);
-    private static final BuildMessage FIFTH_BUILD = new BuildMessage(TODAY + 4000, BuildMessage.BUILD_FAILED);
-    private static final BuildMessage SIXTH_BUILD = new BuildMessage(TODAY + 5000, BuildMessage.BUILD_SUCCESS);
+    private static final BuildMessage FIRST_BUILD = new BuildMessage(TODAY, Result.SUCCESS.toString());
+    private static final BuildMessage SECOND_BUILD = new BuildMessage(TODAY + 1000, Result.FAILURE.toString());
+    private static final BuildMessage THIRD_BUILD = new BuildMessage(TODAY + 2000, Result.FAILURE.toString());
+    private static final BuildMessage FOURTH_BUILD = new BuildMessage(TODAY + 3000, Result.SUCCESS.toString());
+    private static final BuildMessage FIFTH_BUILD = new BuildMessage(TODAY + 4000, Result.FAILURE.toString());
+    private static final BuildMessage SIXTH_BUILD = new BuildMessage(TODAY + 5000, Result.SUCCESS.toString());
 
     @Before
     public void setUp() throws Exception {
-
     }
 
     @Test

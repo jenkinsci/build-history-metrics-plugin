@@ -77,6 +77,7 @@ public class IntegrationTest {
         assertEquals(metricElementIdentifier + "Metric labeled incorrectly", expectedLabel, label);
         String value = row.getOneHtmlElementByAttribute("td", "class", "metric-value").getTextContent();
         assertNotEquals("Metric value should be set", 0, value.length());
+        assertNotEquals("Metric value should not be zero", "0", value);
         return metricsTable;
     }
 
