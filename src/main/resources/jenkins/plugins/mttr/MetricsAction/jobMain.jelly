@@ -30,7 +30,7 @@
                     <td class="metric-value">${it.getMetricMap().get("mttrAllBuilds")}</td>
                 </tr>
                 <tr id="mttfLast7days">
-                    <th rowspan="3">MTTR</th>
+                    <th rowspan="3">MTTF</th>
                     <td class="metric-label">Last 7 Days</td>
                     <td class="metric-value">${it.getMetricMap().get("mttfLast7days")}</td>
                 </tr>
