@@ -1,8 +1,15 @@
-Jenkins MTTR Plugin
-=========================
+Jenkins Quality Metrics Plugin
+======================================
 
-This plugin statistics mean time to repair for job builds .
+This plugin provides metrics around quality.
 
-See [MTTR Plugin](https://wiki.jenkins-ci.org/display/JENKINS/MTTR-plugin) for more information.
+Currently supported metrics
+- Mean time to Failure
+- Mean time to Recovery
 
-[![Build Status](https://buildhive.cloudbees.com/job/zhaozhiming/job/mttr/badge/icon)](https://buildhive.cloudbees.com/job/zhaozhiming/job/mttr/)
+Roadmap
+- Build Time Standard Deviation
+- Time series charts for metrics
+
+See INSERT LINK TO JENKINS WIKI for more information.
+

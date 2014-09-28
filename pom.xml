@@ -7,12 +7,12 @@
         <!-- which version of Jenkins is this plugin built against? -->
     </parent>
 
-    <artifactId>mttr</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <artifactId>quality-metrics-plugin</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
-    <name>mean time to repair plugin</name>
-    <description>statistics job builds mean time to repair</description>
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/MTTR+Plugin</url>
+    <name>Quality Metrics plugin</name>
+    <description>Provides build metrics for your jenkins jobs with a focus on quality</description>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/TBD</url>
 
     <dependencies>
         <dependency>
@@ -25,18 +25,40 @@
 
     <developers>
         <developer>
-            <id>zhaozhiming</id>
-            <name>Zhao zhiming</name>
-            <email>kingzzm1982@sina.com</email>
+            <id>mcgin</id>
+            <name>Aidan McGinley</name>
+            <email>aidan@aidanmcginley.com</email>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:ssh://github.com/zhaozhiming/mttr.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/zhaozhiming/mttr.git</developerConnection>
-        <url>https://github.com/zhaozhiming/mttr.git</url>
+        <connection></connection>
+        <developerConnection></developerConnection>
+        <url>https://github.com/mcgin/aggregate-build-metrics</url>
     </scm>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.2.201409121644</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>2.2.0</version>
+            </plugin>
+        </plugins>
+    </build>
     <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
     <repositories>
         <repository>
