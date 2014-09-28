@@ -1,18 +1,5 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-<!--
-
-<table border=1>
-
-</table>
-
-<table id=blah>
-
-        <tr class=mttr7day>
-            <td class=metric-label>BLAH</td>
-            <td class=metric-value>123</td>
-        </tr>
-     </table> -->
     <table id="aggregate-build-metrics" style="margin-top: 1em; margin-left:1em;">
         <t:summary iconOnly="true" icon="/plugin/mttr/icons/mttr-48x48.png">
 
