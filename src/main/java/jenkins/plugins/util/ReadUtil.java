@@ -5,6 +5,7 @@ import com.google.common.io.Files;
 import hudson.Util;
 import hudson.model.Job;
 import jenkins.plugins.model.BuildMessage;
+import jenkins.plugins.model.MTTRMetric;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,25 +15,27 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+//TODO Wrap some tests around this class
 public class ReadUtil {
 
     private static final Logger LOGGER = Logger.getLogger(ReadUtil.class.getName());
 
-    public static Properties getJobProperties(Job job) {
+    public static Properties getJobProperties(Class metricType, Job job) {
         try {
             File rootDir = job.getRootDir();
-            File file = new File(rootDir.getAbsolutePath() + File.separator + StoreUtil.MTTR_PROPERTY_FILE);
+            String fileName = metricType.equals(MTTRMetric.class)?StoreUtil.MTTR_PROPERTY_FILE:StoreUtil.MTTF_PROPERTY_FILE;
+            File file = new File(rootDir.getAbsolutePath() + File.separator + fileName);
             Properties properties = new Properties();
             properties.load(new FileInputStream(file));
             return properties;
         } catch (IOException e) {
             LOGGER.warning(String.format("get property file error : %s", e.getMessage()));
-            return null;
+            return new Properties();
         }
     }
 
     public static String getColumnResult(Job job, String resultKey) {
-        Properties properties = ReadUtil.getJobProperties(job);
+        Properties properties = ReadUtil.getJobProperties(MTTRMetric.class, job);
         if (properties == null) {
             LOGGER.info("property file can't find");
             return "N/A";

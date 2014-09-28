@@ -36,7 +36,6 @@ public class StoreUtil {
 
     public static void storeBuildMetric(Class metricType, Run run, AggregateBuildMetric... buildMetrics) {
         try {
-
             StringBuilder fileContent = new StringBuilder();
 
             for (AggregateBuildMetric buildMetric : buildMetrics) {

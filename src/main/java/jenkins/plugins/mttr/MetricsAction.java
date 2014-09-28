@@ -1,6 +1,7 @@
 package jenkins.plugins.mttr;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.*;
@@ -51,21 +52,27 @@ public class MetricsAction implements Action {
         return null;
     }
 
-    public List<String> getShowResult() throws IOException {
-        Properties properties = ReadUtil.getJobProperties(project);
-        if (properties == null) {
-            LOGGER.info("property file can't find");
-            return Lists.newArrayList(Messages.canNotGetResult());
-        }
+    public Map<String, String> getMetricMap() throws IOException {
+        Map<String, String> result = new HashMap<String, String>();
 
-        List<String> result = Lists.newArrayList();
-        long last7days = Long.valueOf(properties.get(MTTR_LAST_7_DAYS).toString());
-        result.add(Messages.last7DaysBuildsResult(Util.getPastTimeString(last7days)));
-        long last30days = Long.valueOf(properties.get(MTTR_LAST_30_DAYS).toString());
-        result.add(Messages.last30DaysBuildsResult(Util.getPastTimeString(last30days)));
-        long allBuilds = Long.valueOf(properties.get(MTTR_ALL_BUILDS).toString());
-        result.add(Messages.allBuildsResult(Util.getPastTimeString(allBuilds)));
+        Properties properties = new Properties();
+        properties.putAll(ReadUtil.getJobProperties(MTTRMetric.class, project));
+        properties.putAll(ReadUtil.getJobProperties(MTTFMetric.class, project));
+
+        result.put(MetricsAction.MTTR_LAST_7_DAYS, getPropertyOrDefault(properties, MetricsAction.MTTR_LAST_7_DAYS, "0"));
+        result.put(MetricsAction.MTTR_LAST_30_DAYS, getPropertyOrDefault(properties, MetricsAction.MTTR_LAST_30_DAYS, "0"));
+        result.put(MetricsAction.MTTR_ALL_BUILDS, getPropertyOrDefault(properties, MetricsAction.MTTR_ALL_BUILDS, "0"));
+
+        result.put(MetricsAction.MTTF_LAST_7_DAYS, getPropertyOrDefault(properties, MetricsAction.MTTF_LAST_7_DAYS, "0"));
+        result.put(MetricsAction.MTTF_LAST_30_DAYS, getPropertyOrDefault(properties, MetricsAction.MTTF_LAST_30_DAYS, "0"));
+        result.put(MetricsAction.MTTF_ALL_BUILDS, getPropertyOrDefault(properties, MetricsAction.MTTF_ALL_BUILDS, "0"));
+
         return result;
+    }
+
+    private String getPropertyOrDefault(Properties properties, String key, String defaultValue) {
+        return properties.containsKey(key)?
+                properties.getProperty(key):defaultValue;
     }
 
     @Extension

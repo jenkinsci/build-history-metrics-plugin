@@ -1,98 +1,96 @@
 package jenkins.plugins.mttr;
 
 import com.google.common.io.Files;
-import hudson.model.FreeStyleProject;
-import jenkins.plugins.util.StoreUtil;
-import org.junit.Before;
+import hudson.model.AbstractProject;
 import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.JenkinsRule;
+import org.junit.rules.TemporaryFolder;
+import org.mockito.Mockito;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.List;
+import java.nio.file.Paths;
+import java.util.Map;
 
-import static jenkins.plugins.util.StoreUtil.UTF_8;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MetricsActionTest {
-
-    private FreeStyleProject project;
-    private String rootDirectory;
-
     @Rule
-    public JenkinsRule jenkins = new JenkinsRule();
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    @Before
-    public void setUp() throws Exception {
-        project = jenkins.getInstance().createProject(FreeStyleProject.class, "test");
-        rootDirectory = project.getRootDir() + File.separator;
-    }
-
-    @Test
-    public void should_store_build_message_file_correctly() throws Exception {
-        project.scheduleBuild2(0).get();
-
-        File buildsMessageFile = new File(rootDirectory + MetricsAction.ALL_BUILDS_FILE_NAME);
-        assertTrue(buildsMessageFile.exists());
-
-        List<String> lines = Files.readLines(buildsMessageFile, Charset.forName(UTF_8));
-
-        String[] line1 = lines.get(0).split(",");
-        assertThat(line1[0], is("1"));
-        assertThat(line1[2], is("SUCCESS"));
-
-        project.scheduleBuild2(1).get();
-
-        lines = Files.readLines(buildsMessageFile, Charset.forName(UTF_8));
-        String[] line2 = lines.get(1).split(",");
-        assertThat(lines.size(), is(2));
-        assertThat(line2[0], is("2"));
-        assertThat(line2[2], is("SUCCESS"));
-    }
+    private static final String EXPECTED_MTTR_7 = "200";
+    private static final String EXPECTED_MTTR_30 = "300";
+    private static final String EXPECTED_MTTR_ALL = "400";
+    private static final String EXPECTED_MTTF_7 = "1200";
+    private static final String EXPECTED_MTTF_30 = "1300";
+    private static final String EXPECTED_MTTF_ALL = "1400";
 
     @Test
-    public void should_store_mttr_properties_file_correctly() throws Exception {
-        project.scheduleBuild2(0).get();
+    public void GetMetricMap_Should_ReturnAMapWithTheMetricsPopulated() throws IOException {
+        AbstractProject project = CreateMockProject();
+        CreateAMockMTTRPropertiesFileIn(project.getRootDir());
+        CreateAMockMTTFPropertiesFileIn(project.getRootDir());
 
-        File propertyFile = new File(rootDirectory + StoreUtil.MTTR_PROPERTY_FILE);
-        assertTrue(propertyFile.exists());
+        MetricsAction action = new MetricsAction(project);
+        Map<String,String> map = action.getMetricMap();
 
-        List<String> lines = Files.readLines(propertyFile, Charset.forName(UTF_8));
+        assertEquals("MTTR_LAST_7_DAYS is incorrect",
+                EXPECTED_MTTR_7, map.get(MetricsAction.MTTR_LAST_7_DAYS));
+        assertEquals("MTTR_LAST_30_DAYS is incorrect",
+                EXPECTED_MTTR_30, map.get(MetricsAction.MTTR_LAST_30_DAYS));
+        assertEquals("MTTR_ALL_BUILDS is incorrect",
+                EXPECTED_MTTR_ALL, map.get(MetricsAction.MTTR_ALL_BUILDS));
 
-        assertThat(lines.get(0), is(String.format("%s=0", MetricsAction.MTTR_LAST_7_DAYS)));
-        assertThat(lines.get(1), is(String.format("%s=0", MetricsAction.MTTR_LAST_30_DAYS)));
-        assertThat(lines.get(2), is(String.format("%s=0", MetricsAction.MTTR_ALL_BUILDS)));
+        assertEquals("MTTF_LAST_7_DAYS is incorrect",
+                EXPECTED_MTTF_7, map.get(MetricsAction.MTTF_LAST_7_DAYS));
+        assertEquals("MTTF_LAST_30_DAYS is incorrect",
+                EXPECTED_MTTF_30, map.get(MetricsAction.MTTF_LAST_30_DAYS));
+        assertEquals("MTTF_ALL_BUILDS is incorrect",
+                EXPECTED_MTTF_ALL, map.get(MetricsAction.MTTF_ALL_BUILDS));
+    }
+    @Test
+    public void GetMetricMap_Should_ReturnAMapWithTheZeroValueMetrics_When_PropertiesFilesDoNotExist() throws IOException {
+        AbstractProject project = CreateMockProject();
+
+        MetricsAction action = new MetricsAction(project);
+        Map<String,String> map = action.getMetricMap();
+
+        assertEquals("MTTR_LAST_7_DAYS is incorrect",
+                "0", map.get(MetricsAction.MTTR_LAST_7_DAYS));
+        assertEquals("MTTR_LAST_30_DAYS is incorrect",
+                "0", map.get(MetricsAction.MTTR_LAST_30_DAYS));
+        assertEquals("MTTR_ALL_BUILDS is incorrect",
+                "0", map.get(MetricsAction.MTTR_ALL_BUILDS));
+
+        assertEquals("MTTF_LAST_7_DAYS is incorrect",
+                "0", map.get(MetricsAction.MTTF_LAST_7_DAYS));
+        assertEquals("MTTF_LAST_30_DAYS is incorrect",
+                "0", map.get(MetricsAction.MTTF_LAST_30_DAYS));
+        assertEquals("MTTF_ALL_BUILDS is incorrect",
+                "0", map.get(MetricsAction.MTTF_ALL_BUILDS));
     }
 
-    @Test
-    public void should_store_mttf_properties_file_correctly() throws Exception {
-        project.scheduleBuild2(0).get();
-
-        File propertyFile = new File(rootDirectory + StoreUtil.MTTF_PROPERTY_FILE);
-        assertTrue(propertyFile.exists());
-
-        List<String> lines = Files.readLines(propertyFile, Charset.forName(UTF_8));
-
-        assertThat(lines.get(0), is(String.format("%s=0", MetricsAction.MTTF_LAST_7_DAYS)));
-        assertThat(lines.get(1), is(String.format("%s=0", MetricsAction.MTTF_LAST_30_DAYS)));
-        assertThat(lines.get(2), is(String.format("%s=0", MetricsAction.MTTF_ALL_BUILDS)));
+    private AbstractProject CreateMockProject() throws IOException {
+        AbstractProject job = Mockito.mock(AbstractProject.class);
+        File rootFolder = temporaryFolder.newFolder();
+        Mockito.when(job.getRootDir()).thenReturn(rootFolder);
+        return job;
     }
 
-    @Test
-    public void should_store_all_build_message_when_store_file_not_exist() throws Exception {
-        project.scheduleBuild2(0).get();
-        project.scheduleBuild2(1).get();
+    private void CreateAMockMTTRPropertiesFileIn(File rootFolder) throws IOException {
+        String s = MetricsAction.MTTR_LAST_7_DAYS+"\t"+EXPECTED_MTTR_7+"\n";
+        s += MetricsAction.MTTR_LAST_30_DAYS+"\t"+EXPECTED_MTTR_30+"\n";
+        s += MetricsAction.MTTR_ALL_BUILDS+"\t"+EXPECTED_MTTR_ALL+"\n";
 
-        File buildsMessageFile = new File(rootDirectory + MetricsAction.ALL_BUILDS_FILE_NAME);
-        buildsMessageFile.delete();
+        Files.write(s.getBytes(Charset.defaultCharset()), Paths.get(rootFolder.getAbsolutePath(), "mttr.properties").toFile());
+    }
 
-        project.scheduleBuild2(3).get();
+    private void CreateAMockMTTFPropertiesFileIn(File rootFolder) throws IOException {
+        String s = MetricsAction.MTTF_LAST_7_DAYS+"\t"+EXPECTED_MTTF_7+"\n";
+        s += MetricsAction.MTTF_LAST_30_DAYS+"\t"+EXPECTED_MTTF_30+"\n";
+        s += MetricsAction.MTTF_ALL_BUILDS+"\t"+EXPECTED_MTTF_ALL+"\n";
 
-        assertTrue(buildsMessageFile.exists());
-        List<String> lines = Files.readLines(buildsMessageFile, Charset.forName(UTF_8));
-        assertThat(lines.size(), is(3));
+        Files.write(s.getBytes(Charset.defaultCharset()), Paths.get(rootFolder.getAbsolutePath(), "mttf.properties").toFile());
     }
 }

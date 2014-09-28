@@ -1,0 +1,62 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+<!--
+
+<table border=1>
+    <tbody>
+        <tr id="mttr7days">
+            <th rowspan="3">MTTR</th>
+            <td class="metric-label">data1</td>
+            <td class="metric-value">data2</td>
+        </tr>
+        <tr>
+            <td>data2</td>
+            <td>data2</td>
+        </tr>
+        <tr>
+            <td>data3</td>
+           <td>data2</td>
+        </tr>
+        <tr>
+            <th rowspan="3">MTTF</th>
+            <td>data1f</td>
+
+        </tr>
+        <tr>
+            <td>data2f</td>
+
+        </tr>
+        <tr>
+            <td>data3f</td>
+
+        </tr>
+    </tbody>
+</table>
+
+<table id=blah>
+
+        <tr class=mttr7day>
+            <td class=metric-label>BLAH</td>
+            <td class=metric-value>123</td>
+        </tr>
+     </table> -->
+    <table id="aggregate-build-metrics" style="margin-top: 1em; margin-left:1em;">
+        <t:summary iconOnly="true" icon="/plugin/mttr/icons/mttr-48x48.png">
+
+            <j:new var="labelMap" className="java.util.HashMap" />
+            <j:expr value="${labelMap.put('mttrLast7days', 'Last 7 days')}" />
+            <j:expr value="${labelMap.put('mttrLast30days', 'Last 30 days')}" />
+            <j:expr value="${labelMap.put('mttrAllBuilds', 'All time')}" />
+            <j:expr value="${labelMap.put('mttfLast7days', 'Last 7 days')}" />
+            <j:expr value="${labelMap.put('mttfLast30days', 'Last 30 days')}" />
+            <j:expr value="${labelMap.put('mttfAllBuilds', 'All time')}" />
+
+            <j:forEach var="entry" items="${it.getMetricMap()}" >
+                <tr id="${entry.getKey()}">
+                    <td class="metric-label">${labelMap.get(entry.getKey())}</td>
+                    <td class="metric-value">${entry.getValue()}</td>
+                </tr>
+            </j:forEach>
+        </t:summary>
+    </table>
+</j:jelly>
