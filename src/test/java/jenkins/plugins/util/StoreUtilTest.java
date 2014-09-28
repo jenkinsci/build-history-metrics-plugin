@@ -12,6 +12,7 @@ import org.junit.rules.TemporaryFolder;
 import org.mockito.*;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -138,7 +139,7 @@ public class StoreUtilTest {
         assertTrue("The mttr.properties file is missing",
                 Files.exists(propertiesFile) );
 
-        List<String> lines = Files.readAllLines(propertiesFile);
+        List<String> lines = Files.readAllLines(propertiesFile, Charset.defaultCharset());
         assertEquals("Should have only 2 lines",2,lines.size());
         assertEquals("The first  MTTR metric is wrong","last7=76543210",lines.get(0));
         assertEquals("The second  MTTR metric is wrong","last30=3210",lines.get(1));
@@ -171,7 +172,7 @@ public class StoreUtilTest {
         assertTrue("The mttf.properties file is missing",
                 Files.exists(propertiesFile) );
 
-        List<String> lines = Files.readAllLines(propertiesFile);
+        List<String> lines = Files.readAllLines(propertiesFile, Charset.defaultCharset());
         assertEquals("Should have only 2 lines",2,lines.size());
         assertEquals("The first MTTF metric is wrong","last7=76543210",lines.get(0));
         assertEquals("The second  MTTF metric is wrong","last30=3210",lines.get(1));
