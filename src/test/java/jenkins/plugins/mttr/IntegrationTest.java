@@ -59,7 +59,6 @@ public class IntegrationTest {
 
         HtmlPage page = jenkins.createWebClient().goTo("job/test/");
         HtmlElement metricsTable = page.getBody().getElementById("aggregate-build-metrics");
-        System.out.println(metricsTable.asXml());
         assertEquals("Metrics should be in a table", metricsTable.getNodeName(), "table");
 
         verifyMetricRow(metricsTable, MetricsAction.MTTF_LAST_7_DAYS, "Last 7 Days");
