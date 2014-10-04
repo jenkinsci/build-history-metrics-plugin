@@ -12,6 +12,7 @@ import jenkins.plugins.model.MTTFMetric;
 import jenkins.plugins.model.MTTRMetric;
 import jenkins.plugins.util.ReadUtil;
 import jenkins.plugins.util.StoreUtil;
+import org.apache.commons.lang.time.DurationFormatUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,8 +72,11 @@ public class MetricsAction implements Action {
     }
 
     private String getPropertyOrDefault(Properties properties, String key, String defaultValue) {
-        return properties.containsKey(key)?
+        String s = properties.containsKey(key)?
                 properties.getProperty(key):defaultValue;
+
+
+        return DurationFormatUtils.formatDurationWords(Long.parseLong(s), true, true);
     }
 
     @Extension

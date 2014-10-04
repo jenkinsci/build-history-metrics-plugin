@@ -1,8 +1,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-    <table id="aggregate-build-metrics" style="margin-top: 1em; margin-left:1em;">
-        <t:summary iconOnly="true" icon="/plugin/mttr/icons/mttr-48x48.png">
-
+    <table id="aggregate-build-metrics" style="margin-top: 1em; margin-left:1em;border: solid thin; border-collapse: collapse; ">
+        <tbody>
                 <tr id="mttrLast7days">
                     <th rowspan="3">MTTR</th>
                     <td class="metric-label">Last 7 Days</td>
@@ -30,6 +29,6 @@
                     <td class="metric-value">${it.getMetricMap().get("mttfAllBuilds")}</td>
                 </tr>
 
-        </t:summary>
+        </tbody>
     </table>
 </j:jelly>
