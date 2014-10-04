@@ -10,8 +10,6 @@ import jenkins.plugins.model.MTTFMetric;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -44,14 +42,16 @@ public class StoreUtil {
             }
 
             String propertyFilename = metricType==MTTFMetric.class?MTTF_PROPERTY_FILE:MTTR_PROPERTY_FILE;
-            Path propertiesFile = Paths.get(run.getParent().getRootDir().getAbsolutePath(), propertyFilename);
-            Files.write(fileContent.toString(), propertiesFile.toFile(), Charset.forName(UTF_8));
+            File propertiesFile = new File(
+                    run.getParent().getRootDir().getAbsolutePath() + File.separator + propertyFilename);
+            Files.write(fileContent.toString(), propertiesFile, Charset.forName(UTF_8));
 
         } catch (IOException e) {
             LOGGER.warning(String.format("store property error:%s", e.getMessage()));
         }
     }
 
+    @SuppressWarnings("unchecked") //Required because of RunList<Run>
     private static void appendAJobsBuildMessageHistoryToFile(Job job, File storeFile) throws IOException {
         StringBuilder fileContent = new StringBuilder();
         RunList<Run> builds = job.getBuilds();

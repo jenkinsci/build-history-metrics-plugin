@@ -169,7 +169,7 @@ public class StoreUtilTest {
 
         //Assert
         Path propertiesFile = Paths.get(rootFolder.getAbsolutePath(), "mttf.properties");
-        assertTrue("The mttf.properties file is missing",
+        assertTrue("The mttf.properties file is missing: "+ propertiesFile.toAbsolutePath().toString(),
                 Files.exists(propertiesFile) );
 
         List<String> lines = Files.readAllLines(propertiesFile, Charset.defaultCharset());
