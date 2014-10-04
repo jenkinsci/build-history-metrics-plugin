@@ -9,8 +9,6 @@ import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -83,7 +81,7 @@ public class MetricsActionTest {
         s += MetricsAction.MTTR_LAST_30_DAYS+"\t"+EXPECTED_MTTR_30+"\n";
         s += MetricsAction.MTTR_ALL_BUILDS+"\t"+EXPECTED_MTTR_ALL+"\n";
 
-        Files.write(s.getBytes(Charset.defaultCharset()), Paths.get(rootFolder.getAbsolutePath(), "mttr.properties").toFile());
+        Files.write(s.getBytes(), new File(rootFolder.getAbsolutePath() + File.separator + "mttr.properties"));
     }
 
     private void CreateAMockMTTFPropertiesFileIn(File rootFolder) throws IOException {
@@ -91,6 +89,6 @@ public class MetricsActionTest {
         s += MetricsAction.MTTF_LAST_30_DAYS+"\t"+EXPECTED_MTTF_30+"\n";
         s += MetricsAction.MTTF_ALL_BUILDS+"\t"+EXPECTED_MTTF_ALL+"\n";
 
-        Files.write(s.getBytes(Charset.defaultCharset()), Paths.get(rootFolder.getAbsolutePath(), "mttf.properties").toFile());
+        Files.write(s.getBytes(), new File(rootFolder.getAbsolutePath() + File.separator + "mttf.properties"));
     }
 }
