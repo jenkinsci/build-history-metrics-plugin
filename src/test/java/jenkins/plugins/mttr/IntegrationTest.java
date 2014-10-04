@@ -55,6 +55,7 @@ public class IntegrationTest {
 
         for(int i=0; i<4; i++) {
             project.scheduleBuild2(0).get();
+            Thread.sleep(1);
         }
 
         HtmlPage page = jenkins.createWebClient().goTo("job/test/");
