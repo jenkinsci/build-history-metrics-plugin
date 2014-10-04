@@ -1,6 +1,7 @@
 package jenkins.plugins.util;
 
 
+import com.google.common.io.Files;
 import hudson.model.*;
 import hudson.util.RunList;
 import jenkins.plugins.model.AggregateBuildMetric;
@@ -13,9 +14,6 @@ import org.mockito.*;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -135,11 +133,12 @@ public class StoreUtilTest {
         StoreUtil.storeBuildMetric(MTTRMetric.class, build, info, info2);
 
         //Assert
-        Path propertiesFile = Paths.get(rootFolder.getAbsolutePath(), "mttr.properties");
-        assertTrue("The mttr.properties file is missing",
-                Files.exists(propertiesFile) );
 
-        List<String> lines = Files.readAllLines(propertiesFile, Charset.defaultCharset());
+        File propertiesFile = new File(rootFolder.getAbsolutePath() + File.separator + "mttr.properties");
+        assertTrue("The mttr.properties file is missing",
+                propertiesFile.exists() );
+
+        List<String> lines = Files.readLines(propertiesFile, Charset.defaultCharset());
         assertEquals("Should have only 2 lines",2,lines.size());
         assertEquals("The first  MTTR metric is wrong","last7=76543210",lines.get(0));
         assertEquals("The second  MTTR metric is wrong","last30=3210",lines.get(1));
@@ -168,11 +167,11 @@ public class StoreUtilTest {
         StoreUtil.storeBuildMetric(MTTFMetric.class, build, info, info2);
 
         //Assert
-        Path propertiesFile = Paths.get(rootFolder.getAbsolutePath(), "mttf.properties");
-        assertTrue("The mttf.properties file is missing: "+ propertiesFile.toAbsolutePath().toString(),
-                Files.exists(propertiesFile) );
+        File propertiesFile = new File(rootFolder.getAbsolutePath() + File.separator + "mttf.properties");
+        assertTrue("The mttf.properties file is missing: "+ propertiesFile.toString(),
+                propertiesFile.exists() );
 
-        List<String> lines = Files.readAllLines(propertiesFile, Charset.defaultCharset());
+        List<String> lines = Files.readLines(propertiesFile, Charset.defaultCharset());
         assertEquals("Should have only 2 lines",2,lines.size());
         assertEquals("The first MTTF metric is wrong","last7=76543210",lines.get(0));
         assertEquals("The second  MTTF metric is wrong","last30=3210",lines.get(1));
