@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class MetricsActionTest {
     @Rule
@@ -81,6 +82,23 @@ public class MetricsActionTest {
                 ZERO_TIME_AS_STRING, map.get(MetricsAction.MTTF_LAST_30_DAYS));
         assertEquals("MTTF_ALL_BUILDS is incorrect",
                 ZERO_TIME_AS_STRING, map.get(MetricsAction.MTTF_ALL_BUILDS));
+    }
+
+    @Test
+    public void ResultColumnsShouldReturnExpectedValues() throws IOException {
+        AbstractProject project = CreateMockProject();
+        CreateAMockMTTRPropertiesFileIn(project.getRootDir());
+        CreateAMockMTTFPropertiesFileIn(project.getRootDir());
+
+        ResultColumn resultColumn = new Last30DaysResultColumn();
+        assertEquals("MTTR_LAST_30_DAYS is incorrect",
+                EXPECTED_MTTR_30_AS_STRING, resultColumn.getResult(project));
+        resultColumn = new Last7DaysResultColumn();
+        assertEquals("MTTR_LAST_30_DAYS is incorrect",
+                EXPECTED_MTTR_7_AS_STRING, resultColumn.getResult(project));
+        resultColumn = new AllBuildsResultColumn();
+        assertEquals("MTTR_LAST_30_DAYS is incorrect",
+                EXPECTED_MTTR_ALL_AS_STRING, resultColumn.getResult(project));
     }
 
     private AbstractProject CreateMockProject() throws IOException {

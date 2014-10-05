@@ -9,12 +9,13 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
 
-public class Last7DaysResultColumn extends ListViewColumn {
+public class Last7DaysResultColumn extends ListViewColumn implements ResultColumn {
 
     @DataBoundConstructor
     public Last7DaysResultColumn() {
     }
 
+    @Override
     public String getResult(Job job) throws IOException {
         return ReadUtil.getColumnResult(job, MetricsAction.MTTR_LAST_7_DAYS);
     }

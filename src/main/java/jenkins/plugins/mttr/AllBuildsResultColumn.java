@@ -9,12 +9,13 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
 
-public class AllBuildsResultColumn extends ListViewColumn {
+public class AllBuildsResultColumn extends ListViewColumn  implements ResultColumn {
 
     @DataBoundConstructor
     public AllBuildsResultColumn() {
     }
 
+    @Override
     public String getResult(Job job) throws IOException {
         return ReadUtil.getColumnResult(job, MetricsAction.MTTR_ALL_BUILDS);
     }
