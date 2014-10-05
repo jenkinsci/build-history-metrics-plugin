@@ -72,11 +72,10 @@ public class MetricsAction implements Action {
     }
 
     private String getPropertyOrDefault(Properties properties, String key, String defaultValue) {
-        String s = properties.containsKey(key)?
+        String duration = properties.containsKey(key)?
                 properties.getProperty(key):defaultValue;
 
-
-        return DurationFormatUtils.formatDurationWords(Long.parseLong(s), true, true);
+        return Util.getPastTimeString(Long.parseLong(duration));
     }
 
     @Extension
