@@ -1,6 +1,5 @@
 package jenkins.plugins.model;
 
-import hudson.Util;
 import hudson.model.Result;
 
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.logging.Logger;
 
 public class MTTRMetric implements AggregateBuildMetric {
     private static final Logger LOGGER = Logger.getLogger(MTTRMetric.class.getName());
-
 
     private int buildCount;
     private long totalFailedTime;
@@ -45,18 +43,11 @@ public class MTTRMetric implements AggregateBuildMetric {
 
             failedBuildDate = 0;
         }
-
-        LOGGER.info(String.format("%s buildCount : %d%n", name, buildCount));
-        LOGGER.info(String.format("%s totalFailedTime : %s%n", name,
-                Util.getPastTimeString(totalFailedTime)));
-        LOGGER.info(String.format("%s average failed  time : %s%n", name,
-                Util.getPastTimeString(calculateMetric())));
     }
 
     @Override
     public long calculateMetric() {
-        if (buildCount == 0) return 0L;
-        return totalFailedTime / buildCount;
+        return buildCount == 0 ? 0L : totalFailedTime / buildCount;
     }
 
     @Override

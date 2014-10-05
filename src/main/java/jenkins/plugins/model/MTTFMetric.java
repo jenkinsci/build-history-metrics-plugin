@@ -4,9 +4,6 @@ import hudson.model.Result;
 
 import java.util.List;
 
-/**
- * Created by aidan on 16/09/14.
- */
 public class MTTFMetric implements AggregateBuildMetric {
     private String metricName;
     private long metricValue;
