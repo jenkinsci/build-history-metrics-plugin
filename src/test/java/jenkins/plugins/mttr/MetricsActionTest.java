@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 public class MetricsActionTest {
@@ -90,13 +89,13 @@ public class MetricsActionTest {
         CreateAMockMTTRPropertiesFileIn(project.getRootDir());
         CreateAMockMTTFPropertiesFileIn(project.getRootDir());
 
-        ResultColumn resultColumn = new Last30DaysResultColumn();
+        ResultColumn resultColumn = new MTTRLast30DaysResultColumn();
         assertEquals("MTTR_LAST_30_DAYS is incorrect",
                 EXPECTED_MTTR_30_AS_STRING, resultColumn.getResult(project));
-        resultColumn = new Last7DaysResultColumn();
+        resultColumn = new MTTRLast7DaysResultColumn();
         assertEquals("MTTR_LAST_30_DAYS is incorrect",
                 EXPECTED_MTTR_7_AS_STRING, resultColumn.getResult(project));
-        resultColumn = new AllBuildsResultColumn();
+        resultColumn = new MTTRAllBuildsResultColumn();
         assertEquals("MTTR_LAST_30_DAYS is incorrect",
                 EXPECTED_MTTR_ALL_AS_STRING, resultColumn.getResult(project));
     }

@@ -9,15 +9,15 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
 
-public class AllBuildsResultColumn extends ListViewColumn  implements ResultColumn {
+public class MTTRLast30DaysResultColumn extends ListViewColumn implements ResultColumn {
 
     @DataBoundConstructor
-    public AllBuildsResultColumn() {
+    public MTTRLast30DaysResultColumn() {
     }
 
     @Override
     public String getResult(Job job) throws IOException {
-        return ReadUtil.getColumnResult(job, MetricsAction.MTTR_ALL_BUILDS);
+        return ReadUtil.getColumnResult(job, MetricsAction.MTTR_LAST_30_DAYS);
     }
 
     @Extension
@@ -26,7 +26,7 @@ public class AllBuildsResultColumn extends ListViewColumn  implements ResultColu
         }
 
         public String getDisplayName() {
-            return Messages.allBuildsColumnTitle();
+            return Messages.last30DaysBuildsColumnTitle();
         }
 
         @Override

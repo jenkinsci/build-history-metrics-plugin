@@ -8,6 +8,7 @@ Currently supported metrics
 - Mean time to Recovery
 
 Roadmap
+- MTTF columns in list view
 - Build Time Standard Deviation
 - Time series charts for metrics
 
