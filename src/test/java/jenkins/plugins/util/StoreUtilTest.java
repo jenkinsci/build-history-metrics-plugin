@@ -48,6 +48,7 @@ public class StoreUtilTest {
         Mockito.when(build.getResult()).thenReturn(Result.FAILURE);
         Mockito.when(build.getNumber()).thenReturn(123);
         Mockito.when(build.getTimestamp()).thenReturn(timestamp);
+        Mockito.when(build.getDuration()).thenReturn(5000L);
 
         //Act
         StoreUtil.storeBuildMessages(existingFile, build);
@@ -58,8 +59,8 @@ public class StoreUtilTest {
 
         assertEquals("The file should have 3 lines",
                 3, linesInFile);
-        assertEquals("The data should be in the form BUILDNUMBER,TIMEINMILLIS,RESULT",
-                "123,5678,FAILURE", storedString);
+        assertEquals("The data should be in the form BUILDNUMBER,STARTTIMEINMILLIS,DURATIONINMILLIS,RESULT",
+                "123,5678,5000,FAILURE", storedString);
     }
 
     @Test
@@ -77,11 +78,13 @@ public class StoreUtilTest {
         AbstractBuild build = Mockito.mock(AbstractBuild.class);
         Mockito.when(build.getResult()).thenReturn(Result.FAILURE);
         Mockito.when(build.getNumber()).thenReturn(34);
+        Mockito.when(build.getDuration()).thenReturn(56L);
         Mockito.when(build.getTimestamp()).thenReturn(timestamp);
 
         AbstractBuild build2 = Mockito.mock(AbstractBuild.class);
         Mockito.when(build2.getResult()).thenReturn(Result.SUCCESS);
         Mockito.when(build2.getNumber()).thenReturn(89);
+        Mockito.when(build2.getDuration()).thenReturn(10L);
         Mockito.when(build2.getTimestamp()).thenReturn(timestamp2);
 
         Job job = Mockito.mock(Job.class);
@@ -105,9 +108,9 @@ public class StoreUtilTest {
         assertEquals("The file should have 2 lines",
                 2, linesInFile);
         assertEquals("The data for the first build is not correct",
-                "34,12,FAILURE", firstBuild);
+                "34,12,56,FAILURE", firstBuild);
         assertEquals("The data for the second build is not correct",
-                "89,67,SUCCESS", secondBuild);
+                "89,67,10,SUCCESS", secondBuild);
     }
 
     @Test

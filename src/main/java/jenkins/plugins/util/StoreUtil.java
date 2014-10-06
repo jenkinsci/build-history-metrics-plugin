@@ -72,6 +72,7 @@ public class StoreUtil {
     private static void constructBuildInfoStringForRun(StringBuilder fileContent, Run build) {
         fileContent.append(build.getNumber()).append(",")
                 .append(build.getTimestamp().getTimeInMillis()).append(",")
+                .append(build.getDuration()).append(",")
                 .append(build.getResult()).append("\n");
     }
 }
