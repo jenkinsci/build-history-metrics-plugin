@@ -93,16 +93,16 @@ public class IntegrationTest {
         List<String> lines = Files.readLines(buildsMessageFile, Charset.forName(UTF_8));
 
         String[] line1 = lines.get(0).split(",");
-        assertThat(line1[0], is("1"));
-        assertThat(line1[2], is("SUCCESS"));
+        assertThat("Build number", line1[0], is("1"));
+        assertThat("Build Status", line1[3], is("SUCCESS"));
 
         project.scheduleBuild2(1).get();
 
         lines = Files.readLines(buildsMessageFile, Charset.forName(UTF_8));
         String[] line2 = lines.get(1).split(",");
         assertThat(lines.size(), is(2));
-        assertThat(line2[0], is("2"));
-        assertThat(line2[2], is("SUCCESS"));
+        assertThat("Build Number", line2[0], is("2"));
+        assertThat("Build Status", line2[3], is("SUCCESS"));
     }
 
     @Test
