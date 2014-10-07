@@ -1,21 +1,29 @@
 package jenkins.plugins.model;
 
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+
 import java.util.List;
 
 public class StandardDeviationMetric implements AggregateBuildMetric {
 
     private final String name;
     private final long metric;
+    private final int occurences;
 
     public StandardDeviationMetric(String name, List<BuildMessage> messages) {
         this.name = name;
-        metric = 0L;
+        this.occurences = messages.size();
 
+        SummaryStatistics statistics = new SummaryStatistics();
+        for(BuildMessage m:messages) {
+            statistics.addValue(m.getDuration());
+        }
+        metric = (long) statistics.getStandardDeviation();
     }
 
     @Override
     public int getOccurences() {
-        return 1;
+        return occurences;
     }
 
     @Override

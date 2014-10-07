@@ -21,24 +21,41 @@ public class StandardDeviationMetricTest {
     private static final BuildMessage FOURTH_BUILD = new BuildMessage(4, TODAY + 3000, 4500, Result.SUCCESS.toString());
     private static final BuildMessage FIFTH_BUILD = new BuildMessage(5, TODAY + 4000, 5500, Result.FAILURE.toString());
     private static final BuildMessage SIXTH_BUILD = new BuildMessage(6, TODAY + 5000, 6500, Result.SUCCESS.toString());
+    private static final BuildMessage SEVENTH_BUILD = new BuildMessage(7, TODAY + 7000, 7500, Result.ABORTED.toString());
+    private static final BuildMessage EIGHTH_BUILD = new BuildMessage(8, TODAY + 8000, 8500, Result.UNSTABLE.toString());
 
 
     @Test
-    @Ignore
-    public void should_return_1_second_when_first_success_build() {
-        runAndVerifyResult(Lists.newArrayList(FIRST_BUILD), 1000L, 1);
+    public void should_return_1_5_seconds_when_first_success_build() {
+        runAndVerifyResult(Lists.newArrayList(FIRST_BUILD), 0, 1);
+    }
+    @Test
+    public void should_return_2_5_seconds_when_first_failure_build() {
+        runAndVerifyResult(Lists.newArrayList(SECOND_BUILD), 0, 1);
+    }
+    @Test
+    public void should_return_7_5_seconds_when_first_aborted_build() {
+        runAndVerifyResult(Lists.newArrayList(SEVENTH_BUILD), 0, 1);
+    }
+    @Test
+    public void should_return_8_5_seconds_when_first_unstable_build() {
+        runAndVerifyResult(Lists.newArrayList(EIGHTH_BUILD), 0, 1);
+    }
+    @Test
+    public void should_return_correct_std_with_8_builds() {
+        runAndVerifyResult(Lists.newArrayList(FIRST_BUILD, SECOND_BUILD,THIRD_BUILD, FOURTH_BUILD,
+                FIFTH_BUILD,SIXTH_BUILD,SEVENTH_BUILD,EIGHTH_BUILD), 2449, 8);
     }
 
     @Test
-    @Ignore
-    public void should_return_2_second_when_first_failure_build() {
-        runAndVerifyResult(Lists.newArrayList(SECOND_BUILD), 2000L, 1);
+    public void should_return_correct_std_with_2_builds() {
+        runAndVerifyResult(Lists.newArrayList(FIRST_BUILD, SECOND_BUILD), 707L, 2);
     }
 
     private void runAndVerifyResult(ArrayList<BuildMessage> builds, long expectTime, int expectCount) {
         AggregateBuildMetric mttrMetric = new StandardDeviationMetric("test", builds);
         assertEquals("Metric Name", "test", mttrMetric.getName());
-        assertEquals("MTTR Metric", expectTime, mttrMetric.calculateMetric());
+        assertEquals("StandardDeviationMetric", expectTime, mttrMetric.calculateMetric());
         assertEquals("Build Count", expectCount, mttrMetric.getOccurences());
     }
 }
