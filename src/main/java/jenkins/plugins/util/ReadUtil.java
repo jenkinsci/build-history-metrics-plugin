@@ -51,7 +51,8 @@ public class ReadUtil {
             List<BuildMessage> buildMessages = Lists.newArrayList();
             for (String line : fileLines) {
                 String[] build = line.split(",");
-                buildMessages.add(new BuildMessage(Long.valueOf(build[1]), build[2]));
+                buildMessages.add(new BuildMessage(Long.valueOf(build[0]),
+                        Long.valueOf(build[1]), Long.valueOf(build[2]), build[3]));
             }
             return buildMessages;
         } catch (IOException e) {
