@@ -7,11 +7,11 @@
         <!-- which version of Jenkins is this plugin built against? -->
     </parent>
 
-    <artifactId>quality-metrics-plugin</artifactId>
+    <artifactId>build-history-metrics-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
-    <name>Quality Metrics plugin</name>
-    <description>Provides build metrics for your jenkins jobs with a focus on quality</description>
+    <name>Build History Metrics plugin</name>
+    <description>Provides build metrics that encompass the history of all the runs</description>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/TBD</url>
 
     <dependencies>
@@ -42,9 +42,9 @@
     </developers>
 
     <scm>
-        <connection></connection>
-        <developerConnection></developerConnection>
-        <url>https://github.com/mcgin/aggregate-build-metrics</url>
+        <connection>scm:git:ssh://github.com/jenkinsci/build-history-metrics-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/build-history-metrics-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/build-history-metrics-plugin</url>
     </scm>
 
     <build>
