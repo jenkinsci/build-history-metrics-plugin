@@ -14,3 +14,5 @@ Roadmap
 
 See https://wiki.jenkins-ci.org/display/JENKINS/Build+History+Metrics+Plugin for more information.
 
+[![Build Status](https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/build-history-metrics-plugin)](https://jenkins.ci.cloudbees.com/job/plugins/job/build-history-metrics-plugin/)
+
