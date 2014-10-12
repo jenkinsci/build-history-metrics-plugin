@@ -1,6 +1,8 @@
 package jenkins.plugins.model;
 
-public class BuildMessage {
+import java.util.Comparator;
+
+public class BuildMessage implements Comparator<BuildMessage>, Comparable<BuildMessage> {
     private long startTime;
     private String result;
     private long duration;
@@ -24,4 +26,14 @@ public class BuildMessage {
     }
 
     public long getDuration() { return duration; }
+
+    @Override
+    public int compare(BuildMessage message1, BuildMessage message2) {
+        return (int) (message1.getBuildNumber() - message2.getBuildNumber());
+    }
+
+    @Override
+    public int compareTo(BuildMessage message) {
+        return compare(this, message);
+    }
 }

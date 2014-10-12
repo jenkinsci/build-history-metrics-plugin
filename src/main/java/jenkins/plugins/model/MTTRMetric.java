@@ -1,5 +1,6 @@
 package jenkins.plugins.model;
 
+import com.google.common.collect.Ordering;
 import hudson.model.Result;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public class MTTRMetric implements AggregateBuildMetric {
 
     public MTTRMetric(String name, List<BuildMessage> builds) {
         this.name = name;
-        initialize(builds);
+        initialize(Ordering.natural().sortedCopy(builds));
     }
 
     @Override

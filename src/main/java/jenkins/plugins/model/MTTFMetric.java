@@ -1,7 +1,9 @@
 package jenkins.plugins.model;
 
+import com.google.common.collect.Ordering;
 import hudson.model.Result;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MTTFMetric implements AggregateBuildMetric {
@@ -11,9 +13,8 @@ public class MTTFMetric implements AggregateBuildMetric {
 
     public MTTFMetric(String metricName, List<BuildMessage> builds) {
         this.metricName = metricName;
-        initialize(builds);
+        initialize(Ordering.natural().sortedCopy(builds));
     }
-
 
     private void initialize(List<BuildMessage> builds) {
         long successBuildDate = 0;

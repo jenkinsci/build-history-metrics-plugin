@@ -59,6 +59,14 @@ public class MTTFMetricTest {
                 FOURTH_BUILD, FIFTH_BUILD, SIXTH_BUILD);
         runAndVerifyResult(builds, 1000L, 2);
     }
+
+    @Test
+    public void should_return_failed_info_when_have_all_builds_regardless_of_order_they_are_added() {
+        List<BuildMessage> builds = Lists.newArrayList(
+                SIXTH_BUILD, FIFTH_BUILD, FOURTH_BUILD, THIRD_BUILD, SECOND_BUILD, FIRST_BUILD);
+        runAndVerifyResult(builds, 1000L, 2);
+    }
+
     @Test
     public void should_return_failed_info_when_starting_with_a_failed_build() {
         List<BuildMessage> builds = Lists.newArrayList(SECOND_BUILD, THIRD_BUILD,

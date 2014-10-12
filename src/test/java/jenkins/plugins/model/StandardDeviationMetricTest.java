@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,11 +49,18 @@ public class StandardDeviationMetricTest {
     }
 
     @Test
+    public void should_return_failed_info_when_have_all_builds_regardless_of_order_they_are_added() {
+        List<BuildMessage> builds = Lists.newArrayList( EIGHTH_BUILD, SEVENTH_BUILD, SIXTH_BUILD,
+                FIFTH_BUILD, FOURTH_BUILD, THIRD_BUILD, SECOND_BUILD, FIRST_BUILD);
+        runAndVerifyResult(builds, 2449, 8);
+    }
+
+    @Test
     public void should_return_correct_std_with_2_builds() {
         runAndVerifyResult(Lists.newArrayList(FIRST_BUILD, SECOND_BUILD), 707L, 2);
     }
 
-    private void runAndVerifyResult(ArrayList<BuildMessage> builds, long expectTime, int expectCount) {
+    private void runAndVerifyResult(List<BuildMessage> builds, long expectTime, int expectCount) {
         AggregateBuildMetric mttrMetric = new StandardDeviationMetric("test", builds);
         assertEquals("Metric Name", "test", mttrMetric.getName());
         assertEquals("StandardDeviationMetric", expectTime, mttrMetric.calculateMetric());
