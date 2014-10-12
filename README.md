@@ -1,7 +1,7 @@
-Jenkins Quality Metrics Plugin
+Jenkins Build History Metrics Plugin
 ======================================
 
-This plugin provides metrics around quality.
+This plugin provides metrics based on all historical builds for a job.
 
 Currently supported metrics
 - Mean time to Failure
