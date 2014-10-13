@@ -5,3 +5,4 @@ target
 *.ipr
 *.iws
 work
+start-ssh-agent.sh
