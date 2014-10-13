@@ -12,7 +12,7 @@
     <packaging>hpi</packaging>
     <name>Build History Metrics plugin</name>
     <description>Provides build metrics that encompass the history of all the runs</description>
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/TBD</url>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/Build+History+Metrics+Plugin</url>
 
     <dependencies>
         <dependency>
