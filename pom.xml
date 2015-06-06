@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>build-history-metrics-plugin</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
     <packaging>hpi</packaging>
     <name>Build History Metrics plugin</name>
     <description>Provides build metrics that encompass the history of all the runs</description>
@@ -45,7 +45,7 @@
         <connection>scm:git:ssh://github.com/jenkinsci/build-history-metrics-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/build-history-metrics-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/build-history-metrics-plugin</url>
-      <tag>HEAD</tag>
+      <tag>build-history-metrics-plugin-1.2</tag>
   </scm>
 
     <build>
