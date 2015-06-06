@@ -6,6 +6,8 @@ import hudson.model.Run;
 import hudson.util.RunList;
 import jenkins.plugins.model.AggregateBuildMetric;
 import jenkins.plugins.model.MTTFMetric;
+import jenkins.plugins.model.MTTRMetric;
+import jenkins.plugins.model.StandardDeviationMetric;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +20,7 @@ public class StoreUtil {
     private static final Logger LOGGER = Logger.getLogger(StoreUtil.class.getName());
     public static final String MTTR_PROPERTY_FILE = "mttr.properties";
     public static final String MTTF_PROPERTY_FILE = "mttf.properties";
+    public static final String STDDEV_PROPERTY_FILE = "stddev.properties";
     public static final String UTF_8 = "UTF-8";
 
     public static void storeBuildMessages(File storeFile, Run build) {
@@ -41,7 +44,7 @@ public class StoreUtil {
                         .append(buildMetric.calculateMetric()).append("\n");
             }
 
-            String propertyFilename = metricType==MTTFMetric.class?MTTF_PROPERTY_FILE:MTTR_PROPERTY_FILE;
+            String propertyFilename = getPropertyFilename(metricType);
             File propertiesFile = new File(
                     run.getParent().getRootDir().getAbsolutePath() + File.separator + propertyFilename);
             Files.write(fileContent.toString(), propertiesFile, Charset.forName(UTF_8));
@@ -49,6 +52,19 @@ public class StoreUtil {
         } catch (IOException e) {
             LOGGER.warning(String.format("store property error:%s", e.getMessage()));
         }
+    }
+
+    public static String getPropertyFilename(Class metricType) {
+        if(metricType==MTTFMetric.class) {
+            return MTTF_PROPERTY_FILE;
+        }
+        if(metricType==MTTRMetric.class) {
+            return MTTR_PROPERTY_FILE;
+        }
+        if(metricType==StandardDeviationMetric.class) {
+            return STDDEV_PROPERTY_FILE;
+        }
+        throw new IllegalArgumentException("No property file mapping for metric - " + metricType);
     }
 
     @SuppressWarnings("unchecked") //Required because of RunList<Run>

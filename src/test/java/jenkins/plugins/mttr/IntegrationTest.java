@@ -69,6 +69,10 @@ public class IntegrationTest {
         verifyMetricRow(metricsTable, MetricsAction.MTTR_LAST_7_DAYS, "Last 7 Days");
         verifyMetricRow(metricsTable, MetricsAction.MTTR_LAST_30_DAYS, "Last 30 Days");
         verifyMetricRow(metricsTable, MetricsAction.MTTR_ALL_BUILDS, "All Time");
+
+        verifyMetricRow(metricsTable, MetricsAction.STDDEV_LAST_7_DAYS, "Last 7 Days");
+        verifyMetricRow(metricsTable, MetricsAction.STDDEV_LAST_30_DAYS, "Last 30 Days");
+        verifyMetricRow(metricsTable, MetricsAction.STDDEV_ALL_BUILDS, "All Time");
     }
 
     private HtmlElement verifyMetricRow(HtmlElement metricsTable, String metricElementIdentifier, String expectedLabel) {
@@ -131,6 +135,20 @@ public class IntegrationTest {
         assertThat(lines.get(0), is(String.format("%s=0", MetricsAction.MTTF_LAST_7_DAYS)));
         assertThat(lines.get(1), is(String.format("%s=0", MetricsAction.MTTF_LAST_30_DAYS)));
         assertThat(lines.get(2), is(String.format("%s=0", MetricsAction.MTTF_ALL_BUILDS)));
+    }
+
+    @Test
+    public void should_store_stddev_properties_file_correctly() throws Exception {
+        project.scheduleBuild2(0).get();
+
+        File propertyFile = new File(rootDirectory + StoreUtil.STDDEV_PROPERTY_FILE);
+        assertTrue(propertyFile.exists());
+
+        List<String> lines = Files.readLines(propertyFile, Charset.forName(UTF_8));
+
+        assertThat(lines.get(0), is(String.format("%s=0", MetricsAction.STDDEV_LAST_7_DAYS)));
+        assertThat(lines.get(1), is(String.format("%s=0", MetricsAction.STDDEV_LAST_30_DAYS)));
+        assertThat(lines.get(2), is(String.format("%s=0", MetricsAction.STDDEV_ALL_BUILDS)));
     }
 
     @Test

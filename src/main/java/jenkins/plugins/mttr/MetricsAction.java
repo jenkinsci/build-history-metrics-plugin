@@ -6,10 +6,7 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.model.*;
 import hudson.model.listeners.RunListener;
-import jenkins.plugins.model.AggregateBuildMetric;
-import jenkins.plugins.model.BuildMessage;
-import jenkins.plugins.model.MTTFMetric;
-import jenkins.plugins.model.MTTRMetric;
+import jenkins.plugins.model.*;
 import jenkins.plugins.util.ReadUtil;
 import jenkins.plugins.util.StoreUtil;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -30,6 +27,10 @@ public class MetricsAction implements Action {
     public static final String MTTF_LAST_7_DAYS = "mttfLast7days";
     public static final String MTTF_LAST_30_DAYS = "mttfLast30days";
     public static final String MTTF_ALL_BUILDS = "mttfAllBuilds";
+
+    public static final String STDDEV_LAST_7_DAYS = "stddevLast7days";
+    public static final String STDDEV_LAST_30_DAYS = "stddevLast30days";
+    public static final String STDDEV_ALL_BUILDS = "stddevAllBuilds";
 
     public static final String ALL_BUILDS_FILE_NAME = "all_builds.mr";
 
@@ -67,6 +68,10 @@ public class MetricsAction implements Action {
         result.put(MetricsAction.MTTF_LAST_7_DAYS, getPropertyOrDefault(properties, MetricsAction.MTTF_LAST_7_DAYS, "0"));
         result.put(MetricsAction.MTTF_LAST_30_DAYS, getPropertyOrDefault(properties, MetricsAction.MTTF_LAST_30_DAYS, "0"));
         result.put(MetricsAction.MTTF_ALL_BUILDS, getPropertyOrDefault(properties, MetricsAction.MTTF_ALL_BUILDS, "0"));
+
+        result.put(MetricsAction.STDDEV_LAST_7_DAYS, getPropertyOrDefault(properties, MetricsAction.STDDEV_LAST_7_DAYS, "0"));
+        result.put(MetricsAction.STDDEV_LAST_30_DAYS, getPropertyOrDefault(properties, MetricsAction.STDDEV_LAST_30_DAYS, "0"));
+        result.put(MetricsAction.STDDEV_ALL_BUILDS, getPropertyOrDefault(properties, MetricsAction.STDDEV_ALL_BUILDS, "0"));
 
         return result;
     }
@@ -118,6 +123,15 @@ public class MetricsAction implements Action {
 
             StoreUtil.storeBuildMetric(MTTFMetric.class, run,
                     mttfLast7DayInfo, mttfLast30DayInfo, mttfAllBuilds);
+
+            AggregateBuildMetric stdDevLast7DayInfo = new StandardDeviationMetric(STDDEV_LAST_7_DAYS, cutListByAgoDays(buildMessages, -7));
+
+            AggregateBuildMetric stdDevLast30DayInfo = new StandardDeviationMetric(STDDEV_LAST_30_DAYS, cutListByAgoDays(buildMessages, -30));
+
+            AggregateBuildMetric stdDevAllFailedInfo = new StandardDeviationMetric(STDDEV_ALL_BUILDS, buildMessages);
+
+            StoreUtil.storeBuildMetric(StandardDeviationMetric.class, run,
+                    stdDevLast7DayInfo, stdDevLast30DayInfo, stdDevAllFailedInfo);
         }
 
         private List<BuildMessage> cutListByAgoDays(List<BuildMessage> builds, int daysAgo) {

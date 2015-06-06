@@ -28,6 +28,19 @@
                     <td class="metric-label">All Time</td>
                     <td class="metric-value">${it.getMetricMap().get("mttfAllBuilds")}</td>
                 </tr>
+                <tr id="stddevLast7days">
+                    <th rowspan="3">Standard Deviation</th>
+                    <td class="metric-label">Last 7 Days</td>
+                    <td class="metric-value">${it.getMetricMap().get("stddevLast7days")}</td>
+                </tr>
+                <tr id="stddevLast30days">
+                    <td class="metric-label">Last 30 Days</td>
+                    <td class="metric-value">${it.getMetricMap().get("stddevLast30days")}</td>
+                </tr>
+                <tr id="stddevAllBuilds">
+                    <td class="metric-label">All Time</td>
+                    <td class="metric-value">${it.getMetricMap().get("stddevAllBuilds")}</td>
+                </tr>
 
         </tbody>
     </table>

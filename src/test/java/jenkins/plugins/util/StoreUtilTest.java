@@ -7,6 +7,7 @@ import hudson.util.RunList;
 import jenkins.plugins.model.AggregateBuildMetric;
 import jenkins.plugins.model.MTTFMetric;
 import jenkins.plugins.model.MTTRMetric;
+import jenkins.plugins.model.StandardDeviationMetric;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -148,6 +149,40 @@ public class StoreUtilTest {
     }
 
     @Test
+    public void testStorStdDevInfo() throws Exception {
+        //Arrange
+        File rootFolder = temporaryFolder.newFolder();
+
+        Job job = Mockito.mock(Job.class);
+        Mockito.when(job.getRootDir()).thenReturn(rootFolder);
+
+        AbstractBuild build = Mockito.mock(AbstractBuild.class);
+        Mockito.when(build.getParent()).thenReturn(job);
+
+        AggregateBuildMetric info = Mockito.mock(AggregateBuildMetric.class);
+        Mockito.when(info.calculateMetric()).thenReturn(76543210L);
+        Mockito.when(info.getName()).thenReturn("last7");
+
+        AggregateBuildMetric info2 = Mockito.mock(AggregateBuildMetric.class);
+        Mockito.when(info2.calculateMetric()).thenReturn(3210L);
+        Mockito.when(info2.getName()).thenReturn("last30");
+
+        //Act
+        StoreUtil.storeBuildMetric(StandardDeviationMetric.class, build, info, info2);
+
+        //Assert
+
+        File propertiesFile = new File(rootFolder.getAbsolutePath() + File.separator + "stddev.properties");
+        assertTrue("The stddev.properties file is missing",
+                propertiesFile.exists() );
+
+        List<String> lines = Files.readLines(propertiesFile, Charset.defaultCharset());
+        assertEquals("Should have only 2 lines",2,lines.size());
+        assertEquals("The first  stddev metric is wrong","last7=76543210",lines.get(0));
+        assertEquals("The second  stddev metric is wrong","last30=3210",lines.get(1));
+    }
+
+    @Test
     public void testStoreMTTFInfo() throws Exception {
         //Arrange
         File rootFolder = temporaryFolder.newFolder();
@@ -180,14 +215,6 @@ public class StoreUtilTest {
         assertEquals("The second  MTTF metric is wrong","last30=3210",lines.get(1));
     }
 
-    private boolean fileExistsInFolder(final String filename, File folder) {
-        return folder.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.equals(filename);
-            }
-        }).length == 1;
-    }
     private int getLinesInFile(File file) throws IOException {
         LineNumberReader lnr = new LineNumberReader(new FileReader(file));
         lnr.skip(Long.MAX_VALUE);
