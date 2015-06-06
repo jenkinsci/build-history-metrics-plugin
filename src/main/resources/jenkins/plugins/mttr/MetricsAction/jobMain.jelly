@@ -1,47 +1,67 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-    <table id="aggregate-build-metrics" style="margin-top: 1em; margin-left:1em;border: solid thin; border-collapse: collapse; ">
-        <tbody>
-                <tr id="mttrLast7days">
-                    <th rowspan="3">MTTR</th>
-                    <td class="metric-label">Last 7 Days</td>
-                    <td class="metric-value">${it.getMetricMap().get("mttrLast7days")}</td>
-                </tr>
-                <tr id="mttrLast30days">
-                    <td class="metric-label">Last 30 Days</td>
-                    <td class="metric-value">${it.getMetricMap().get("mttrLast30days")}</td>
-                </tr>
-                <tr id="mttrAllBuilds">
-                    <td class="metric-label">All Time</td>
-                    <td class="metric-value">${it.getMetricMap().get("mttrAllBuilds")}</td>
-                </tr>
-                <tr id="mttfLast7days">
-                    <th rowspan="3">MTTF</th>
-                    <td class="metric-label">Last 7 Days</td>
-                    <td class="metric-value">${it.getMetricMap().get("mttfLast7days")}</td>
-                </tr>
-                <tr id="mttfLast30days">
-                    <td class="metric-label">Last 30 Days</td>
-                    <td class="metric-value">${it.getMetricMap().get("mttfLast30days")}</td>
-                </tr>
-                <tr id="mttfAllBuilds">
-                    <td class="metric-label">All Time</td>
-                    <td class="metric-value">${it.getMetricMap().get("mttfAllBuilds")}</td>
-                </tr>
-                <tr id="stddevLast7days">
-                    <th rowspan="3">Standard Deviation</th>
-                    <td class="metric-label">Last 7 Days</td>
-                    <td class="metric-value">${it.getMetricMap().get("stddevLast7days")}</td>
-                </tr>
-                <tr id="stddevLast30days">
-                    <td class="metric-label">Last 30 Days</td>
-                    <td class="metric-value">${it.getMetricMap().get("stddevLast30days")}</td>
-                </tr>
-                <tr id="stddevAllBuilds">
-                    <td class="metric-label">All Time</td>
-                    <td class="metric-value">${it.getMetricMap().get("stddevAllBuilds")}</td>
-                </tr>
+    <style>
+        #aggregate-build-metrics {
+            margin-top: 1em;
+            margin-left:1em;
+            border: solid;
+            border-collapse: collapse;
+        }
+        #aggregate-build-metrics td {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-left: 15px;
+            padding-right: 15px;
+            border: solid thin;
+        }
 
-        </tbody>
-    </table>
+        .all-time {
+            border-bottom: solid;
+        }
+    </style>
+
+    <table id="aggregate-build-metrics">
+            <tbody>
+                    <tr id="mttrLast7days" class="mttr 7day">
+                        <th rowspan="3">MTTR</th>
+                        <td class="metric-label">Last 7 Days</td>
+                        <td class="metric-value">${it.getMetricMap().get("mttrLast7days")}</td>
+                    </tr>
+                    <tr id="mttrLast30days" class="mttr 30day">
+                        <td class="metric-label">Last 30 Days</td>
+                        <td class="metric-value">${it.getMetricMap().get("mttrLast30days")}</td>
+                    </tr>
+                    <tr id="mttrAllBuilds" class="mttr all-time">
+                        <td class="metric-label">All Time</td>
+                        <td class="metric-value">${it.getMetricMap().get("mttrAllBuilds")}</td>
+                    </tr>
+                    <tr id="mttfLast7days" class="mttf 7day">
+                        <th rowspan="3">MTTF</th>
+                        <td class="metric-label">Last 7 Days</td>
+                        <td class="metric-value">${it.getMetricMap().get("mttfLast7days")}</td>
+                    </tr>
+                    <tr id="mttfLast30days" class="mttf 30day">
+                        <td class="metric-label">Last 30 Days</td>
+                        <td class="metric-value">${it.getMetricMap().get("mttfLast30days")}</td>
+                    </tr>
+                    <tr id="mttfAllBuilds" class="mttf all-time">
+                        <td class="metric-label">All Time</td>
+                        <td class="metric-value">${it.getMetricMap().get("mttfAllBuilds")}</td>
+                    </tr>
+                    <tr id="stddevLast7days" class="stddev 7day">
+                        <th rowspan="3">Standard Deviation</th>
+                        <td class="metric-label">Last 7 Days</td>
+                        <td class="metric-value">${it.getMetricMap().get("stddevLast7days")}</td>
+                    </tr>
+                    <tr id="stddevLast30days" class="stddev 30day">
+                        <td class="metric-label">Last 30 Days</td>
+                        <td class="metric-value">${it.getMetricMap().get("stddevLast30days")}</td>
+                    </tr>
+                    <tr id="stddevAllBuilds" class="stddev all-time">
+                        <td class="metric-label">All Time</td>
+                        <td class="metric-value">${it.getMetricMap().get("stddevAllBuilds")}</td>
+                    </tr>
+            </tbody>
+        </table>
+
 </j:jelly>
