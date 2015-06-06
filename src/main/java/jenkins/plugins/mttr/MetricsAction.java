@@ -60,6 +60,7 @@ public class MetricsAction implements Action {
         Properties properties = new Properties();
         properties.putAll(ReadUtil.getJobProperties(MTTRMetric.class, project));
         properties.putAll(ReadUtil.getJobProperties(MTTFMetric.class, project));
+        properties.putAll(ReadUtil.getJobProperties(StandardDeviationMetric.class, project));
 
         result.put(MetricsAction.MTTR_LAST_7_DAYS, getPropertyOrDefault(properties, MetricsAction.MTTR_LAST_7_DAYS, "0"));
         result.put(MetricsAction.MTTR_LAST_30_DAYS, getPropertyOrDefault(properties, MetricsAction.MTTR_LAST_30_DAYS, "0"));
