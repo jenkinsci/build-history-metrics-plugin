@@ -9,10 +9,10 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
 
-public class MTTRLast7DaysResultColumn extends ListViewColumn implements ResultColumn {
+public class BuildMetric7DaysResultColumn extends ListViewColumn implements ResultColumn {
 
     @DataBoundConstructor
-    public MTTRLast7DaysResultColumn() {
+    public BuildMetric7DaysResultColumn() {
     }
 
     @Override
