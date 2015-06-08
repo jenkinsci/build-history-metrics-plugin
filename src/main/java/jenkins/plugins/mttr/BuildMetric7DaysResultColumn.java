@@ -20,6 +20,11 @@ public class BuildMetric7DaysResultColumn extends ListViewColumn implements Resu
         return ReadUtil.getColumnResult(job, MetricsAction.MTTR_LAST_7_DAYS);
     }
 
+    @Override
+    public String getGraph(Job job) throws IOException {
+        return null;
+    }
+
     @Extension
     public static class DescriptorImpl extends ListViewColumnDescriptor {
         public DescriptorImpl() {

@@ -20,6 +20,11 @@ public class BuildMetricAllTimeResultColumn extends ListViewColumn  implements R
         return ReadUtil.getColumnResult(job, MetricsAction.MTTR_ALL_BUILDS);
     }
 
+    @Override
+    public String getGraph(Job job) throws IOException {
+        return null;
+    }
+
     @Extension
     public static class DescriptorImpl extends ListViewColumnDescriptor {
         public DescriptorImpl() {

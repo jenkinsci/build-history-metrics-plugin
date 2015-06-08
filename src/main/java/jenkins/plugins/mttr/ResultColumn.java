@@ -5,5 +5,6 @@ import hudson.model.Job;
 import java.io.IOException;
 
 public interface ResultColumn {
-    public String getResult(Job job) throws IOException;
+    String getResult(Job job) throws IOException;
+    String getGraph(Job job) throws IOException;
 }

@@ -45,8 +45,7 @@ public class StoreUtil {
             }
 
             String propertyFilename = getPropertyFilename(metricType);
-            File propertiesFile = new File(
-                    run.getParent().getRootDir().getAbsolutePath() + File.separator + propertyFilename);
+            File propertiesFile = new File(run.getParent().getRootDir().getAbsolutePath() + File.separator + propertyFilename);
             Files.write(fileContent.toString(), propertiesFile, Charset.forName(UTF_8));
 
         } catch (IOException e) {

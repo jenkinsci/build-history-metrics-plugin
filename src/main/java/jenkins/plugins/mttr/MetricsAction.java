@@ -1,16 +1,24 @@
 package jenkins.plugins.mttr;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.*;
 import hudson.model.listeners.RunListener;
+import hudson.util.HttpResponses;
 import jenkins.plugins.model.*;
+import jenkins.plugins.util.GraphUtil;
 import jenkins.plugins.util.ReadUtil;
 import jenkins.plugins.util.StoreUtil;
-import org.apache.commons.lang.time.DurationFormatUtils;
+import org.jfree.chart.JFreeChart;
+import org.kohsuke.stapler.HttpResponse;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.WebMethod;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -96,8 +104,7 @@ public class MetricsAction implements Action {
     @Extension
     public static class RunListenerImpl extends RunListener<Run> {
 
-        public RunListenerImpl() {
-        }
+        public RunListenerImpl() {}
 
         public void onCompleted(Run run, TaskListener listener) {
             File storeFile = new File(run.getParent().getRootDir().getAbsolutePath()
@@ -133,6 +140,22 @@ public class MetricsAction implements Action {
 
             StoreUtil.storeBuildMetric(StandardDeviationMetric.class, run,
                     stdDevLast7DayInfo, stdDevLast30DayInfo, stdDevAllFailedInfo);
+
+            JFreeChart chart = GraphUtil.generateGraph();
+
+            BufferedImage img = chart.createBufferedImage(500,500);
+
+            File outputfile = new File(run.getParent().getRootDir().getAbsolutePath() + File.separator + "graph.jpg");
+
+
+            try {
+                ImageIO.write(img, "jpg", outputfile);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+
+
         }
 
         private List<BuildMessage> cutListByAgoDays(List<BuildMessage> builds, int daysAgo) {
