@@ -5,9 +5,7 @@ import com.google.common.io.Files;
 import hudson.Util;
 import hudson.model.Job;
 import jenkins.plugins.model.BuildMessage;
-import jenkins.plugins.model.MTTFMetric;
 import jenkins.plugins.model.MTTRMetric;
-import jenkins.plugins.model.StandardDeviationMetric;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,8 +23,8 @@ public class ReadUtil {
     public static Properties getJobProperties(Class metricType, Job job) {
         try {
             File rootDir = job.getRootDir();
-            String fileName = StoreUtil.getPropertyFilename(metricType);
-            File file = new File(rootDir.getAbsolutePath() + File.separator + fileName);
+            String filename = StoreUtil.getPropertyFilename(metricType);
+            File file = new File(rootDir.getAbsolutePath() + File.separator + filename);
             Properties properties = new Properties();
             properties.load(new FileInputStream(file));
             return properties;

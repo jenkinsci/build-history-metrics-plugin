@@ -1,5 +1,6 @@
 package jenkins.plugins.util;
 
+import jenkins.plugins.model.BuildMessage;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -7,9 +8,11 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.util.List;
+
 public class GraphUtil {
-    public static JFreeChart generateGraph() {
-        String chartTitle = "Objects Movement Chart";
+    public static JFreeChart generateGraph(String title, List<BuildMessage> buildMessages) {
+        String chartTitle = title;
         String xAxisLabel = "X";
         String yAxisLabel = "Y";
 
@@ -17,6 +20,7 @@ public class GraphUtil {
 
         JFreeChart chart = ChartFactory.createXYLineChart(chartTitle,
                 xAxisLabel, yAxisLabel, dataset, PlotOrientation.HORIZONTAL, false, false, false);
+
         return chart;
     }
 

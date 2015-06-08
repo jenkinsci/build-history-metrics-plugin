@@ -39,7 +39,7 @@ public class MetricsAction implements Action {
     public static final String STDDEV_LAST_7_DAYS = "stddevLast7days";
     public static final String STDDEV_LAST_30_DAYS = "stddevLast30days";
     public static final String STDDEV_ALL_BUILDS = "stddevAllBuilds";
-
+    
     public static final String ALL_BUILDS_FILE_NAME = "all_builds.mr";
 
     private AbstractProject project;
@@ -115,47 +115,33 @@ public class MetricsAction implements Action {
             List<BuildMessage> buildMessages = ReadUtil.getBuildMessageFrom(storeFile);
 
             AggregateBuildMetric mttrLast7DayInfo = new MTTRMetric(MTTR_LAST_7_DAYS, cutListByAgoDays(buildMessages, -7));
-
             AggregateBuildMetric mttrLast30DayInfo = new MTTRMetric(MTTR_LAST_30_DAYS, cutListByAgoDays(buildMessages, -30));
-
             AggregateBuildMetric mttrAllFailedInfo = new MTTRMetric(MTTR_ALL_BUILDS, buildMessages);
 
             StoreUtil.storeBuildMetric(MTTRMetric.class, run,
                     mttrLast7DayInfo, mttrLast30DayInfo, mttrAllFailedInfo);
 
             AggregateBuildMetric mttfLast7DayInfo = new MTTFMetric(MTTF_LAST_7_DAYS, cutListByAgoDays(buildMessages, -7));
-
             AggregateBuildMetric mttfLast30DayInfo = new MTTFMetric(MTTF_LAST_30_DAYS, cutListByAgoDays(buildMessages, -30));
-
             AggregateBuildMetric mttfAllBuilds = new MTTFMetric(MTTF_ALL_BUILDS, buildMessages);
 
             StoreUtil.storeBuildMetric(MTTFMetric.class, run,
                     mttfLast7DayInfo, mttfLast30DayInfo, mttfAllBuilds);
 
             AggregateBuildMetric stdDevLast7DayInfo = new StandardDeviationMetric(STDDEV_LAST_7_DAYS, cutListByAgoDays(buildMessages, -7));
-
             AggregateBuildMetric stdDevLast30DayInfo = new StandardDeviationMetric(STDDEV_LAST_30_DAYS, cutListByAgoDays(buildMessages, -30));
-
             AggregateBuildMetric stdDevAllFailedInfo = new StandardDeviationMetric(STDDEV_ALL_BUILDS, buildMessages);
 
             StoreUtil.storeBuildMetric(StandardDeviationMetric.class, run,
                     stdDevLast7DayInfo, stdDevLast30DayInfo, stdDevAllFailedInfo);
 
-            JFreeChart chart = GraphUtil.generateGraph();
+            JFreeChart stddevChart = GraphUtil.generateGraph("Standard Deviation of Build Time", buildMessages);
+            JFreeChart mttfChart = GraphUtil.generateGraph("Mean time to Failure", buildMessages);
+            JFreeChart mttrChart = GraphUtil.generateGraph("Mean time to Recovery", buildMessages);
 
-            BufferedImage img = chart.createBufferedImage(500,500);
-
-            File outputfile = new File(run.getParent().getRootDir().getAbsolutePath() + File.separator + "graph.jpg");
-
-
-            try {
-                ImageIO.write(img, "jpg", outputfile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-
-
+            StoreUtil.storeGraph(StandardDeviationMetric.class, run, stddevChart);
+            StoreUtil.storeGraph(MTTFMetric.class, run, mttfChart);
+            StoreUtil.storeGraph(MTTRMetric.class, run, mttrChart);
         }
 
         private List<BuildMessage> cutListByAgoDays(List<BuildMessage> builds, int daysAgo) {

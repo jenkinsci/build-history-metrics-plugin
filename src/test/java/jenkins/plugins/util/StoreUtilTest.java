@@ -8,11 +8,13 @@ import jenkins.plugins.model.AggregateBuildMetric;
 import jenkins.plugins.model.MTTFMetric;
 import jenkins.plugins.model.MTTRMetric;
 import jenkins.plugins.model.StandardDeviationMetric;
+import org.jfree.chart.JFreeChart;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.*;
 
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -213,6 +215,28 @@ public class StoreUtilTest {
         assertEquals("Should have only 2 lines",2,lines.size());
         assertEquals("The first MTTF metric is wrong","last7=76543210",lines.get(0));
         assertEquals("The second  MTTF metric is wrong","last30=3210",lines.get(1));
+    }
+
+    @Test
+    public void testStoreGraph() throws Exception {
+        //Arrange
+        File rootFolder = temporaryFolder.newFolder();
+
+        Job job = Mockito.mock(Job.class);
+        Mockito.when(job.getRootDir()).thenReturn(rootFolder);
+
+        AbstractBuild build = Mockito.mock(AbstractBuild.class);
+        Mockito.when(build.getParent()).thenReturn(job);
+
+        JFreeChart chart = Mockito.mock(JFreeChart.class);
+        Mockito.when(chart.createBufferedImage(500,500)).thenReturn(new BufferedImage(500,500, BufferedImage.TYPE_INT_RGB));
+        //Act
+        StoreUtil.storeGraph(MTTFMetric.class, build, chart);
+
+        //Assert
+        File graphFile = new File(rootFolder.getAbsolutePath() + File.separator + "mttf.jpg");
+        assertTrue("The mttf.jpg file is missing: " + graphFile.toString(),
+                graphFile.exists());
     }
 
     private int getLinesInFile(File file) throws IOException {

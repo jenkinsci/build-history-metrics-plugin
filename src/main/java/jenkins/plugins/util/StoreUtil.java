@@ -1,6 +1,7 @@
 package jenkins.plugins.util;
 
 import com.google.common.io.Files;
+import hudson.model.AbstractBuild;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.util.RunList;
@@ -8,7 +9,9 @@ import jenkins.plugins.model.AggregateBuildMetric;
 import jenkins.plugins.model.MTTFMetric;
 import jenkins.plugins.model.MTTRMetric;
 import jenkins.plugins.model.StandardDeviationMetric;
+import org.jfree.chart.JFreeChart;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -21,6 +24,9 @@ public class StoreUtil {
     public static final String MTTR_PROPERTY_FILE = "mttr.properties";
     public static final String MTTF_PROPERTY_FILE = "mttf.properties";
     public static final String STDDEV_PROPERTY_FILE = "stddev.properties";
+    public static final String MTTR_GRAPH_FILE = "mttr.jpg";
+    public static final String MTTF_GRAPH_FILE = "mttf.jpg";
+    public static final String STDDEV_GRAPH_FILE = "stddev.jpg";
     public static final String UTF_8 = "UTF-8";
 
     public static void storeBuildMessages(File storeFile, Run build) {
@@ -53,17 +59,39 @@ public class StoreUtil {
         }
     }
 
+    public static void storeGraph(Class metricType, Run run, JFreeChart chart) {
+        try {
+            String graphFileName = getGraphFilename(metricType);
+            File graphFile = new File(run.getParent().getRootDir().getAbsolutePath() + File.separator + graphFileName);
+
+            ImageIO.write(chart.createBufferedImage(500,500), "jpg", graphFile);
+        } catch (IOException e) {
+            LOGGER.warning(String.format("store property error:%s", e.getMessage()));
+        }
+    }
+
     public static String getPropertyFilename(Class metricType) {
         if(metricType==MTTFMetric.class) {
             return MTTF_PROPERTY_FILE;
-        }
-        if(metricType==MTTRMetric.class) {
+        } else if(metricType==MTTRMetric.class) {
             return MTTR_PROPERTY_FILE;
-        }
-        if(metricType==StandardDeviationMetric.class) {
+        } else if(metricType==StandardDeviationMetric.class) {
             return STDDEV_PROPERTY_FILE;
+        } else {
+            throw new IllegalArgumentException("No property file mapping for metric - " + metricType);
         }
-        throw new IllegalArgumentException("No property file mapping for metric - " + metricType);
+    }
+
+    public static String getGraphFilename(Class metricType) {
+        if(metricType==MTTFMetric.class) {
+            return MTTF_GRAPH_FILE;
+        } else if(metricType==MTTRMetric.class) {
+            return MTTR_GRAPH_FILE;
+        } else if(metricType==StandardDeviationMetric.class) {
+            return STDDEV_GRAPH_FILE;
+        } else {
+            throw new IllegalArgumentException("No property file mapping for metric - " + metricType);
+        }
     }
 
     @SuppressWarnings("unchecked") //Required because of RunList<Run>
