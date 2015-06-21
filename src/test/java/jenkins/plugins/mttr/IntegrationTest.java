@@ -102,8 +102,11 @@ public class IntegrationTest {
         project.scheduleBuild2(1).get();
 
         lines = Files.readLines(buildsMessageFile, Charset.forName(UTF_8));
+        line1 = lines.get(0).split(",");
         String[] line2 = lines.get(1).split(",");
         assertThat(lines.size(), is(2));
+        assertThat("Build number", line1[0], is("1"));
+        assertThat("Build Status", line1[3], is("SUCCESS"));
         assertThat("Build Number", line2[0], is("2"));
         assertThat("Build Status", line2[3], is("SUCCESS"));
     }
@@ -141,15 +144,14 @@ public class IntegrationTest {
     @Test
     public void should_store_all_build_messages_when_build_message_file_does_not_exist() throws Exception {
         project.scheduleBuild2(0).get();
-        project.scheduleBuild2(1).get();
 
         File buildsMessageFile = new File(rootDirectory + MetricsAction.ALL_BUILDS_FILE_NAME);
         buildsMessageFile.delete();
 
-        project.scheduleBuild2(3).get();
+        project.scheduleBuild2(0).get();
 
         assertTrue(buildsMessageFile.exists());
         List<String> lines = Files.readLines(buildsMessageFile, Charset.forName(UTF_8));
-        assertThat(lines.size(), is(3));
+        assertThat(lines.size(), is(2));
     }
 }
