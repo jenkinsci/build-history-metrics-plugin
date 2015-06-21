@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -54,6 +55,7 @@ public class ReadUtil {
                 buildMessages.add(new BuildMessage(Long.valueOf(build[0]),
                         Long.valueOf(build[1]), Long.valueOf(build[2]), build[3]));
             }
+            Collections.sort(buildMessages);
             return buildMessages;
         } catch (IOException e) {
             LOGGER.warning(String.format("get build message from file error:%s", e.getMessage()));

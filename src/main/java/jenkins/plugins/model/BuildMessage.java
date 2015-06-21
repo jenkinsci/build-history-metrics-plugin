@@ -36,4 +36,9 @@ public class BuildMessage implements Comparator<BuildMessage>, Comparable<BuildM
     public int compareTo(BuildMessage message) {
         return compare(this, message);
     }
+
+    @Override
+    public String toString() {
+        return buildNumber + "\t" + result;
+    }
 }

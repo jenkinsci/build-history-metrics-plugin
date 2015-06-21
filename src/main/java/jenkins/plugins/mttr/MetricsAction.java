@@ -5,20 +5,11 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.model.*;
 import hudson.model.listeners.RunListener;
-import hudson.util.HttpResponses;
 import jenkins.plugins.model.*;
 import jenkins.plugins.util.GraphUtil;
 import jenkins.plugins.util.ReadUtil;
 import jenkins.plugins.util.StoreUtil;
 import org.jfree.chart.JFreeChart;
-import org.kohsuke.stapler.HttpResponse;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-import org.kohsuke.stapler.WebMethod;
-
-import javax.imageio.ImageIO;
-import javax.servlet.ServletException;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -135,13 +126,13 @@ public class MetricsAction implements Action {
             StoreUtil.storeBuildMetric(StandardDeviationMetric.class, run,
                     stdDevLast7DayInfo, stdDevLast30DayInfo, stdDevAllFailedInfo);
 
-            JFreeChart stddevChart = GraphUtil.generateGraph("Standard Deviation of Build Time", buildMessages);
-            JFreeChart mttfChart = GraphUtil.generateGraph("Mean time to Failure", buildMessages);
-            JFreeChart mttrChart = GraphUtil.generateGraph("Mean time to Recovery", buildMessages);
+            JFreeChart stddevChart = GraphUtil.generateStdDevGraph("Standard Deviation of Build Time", buildMessages);
+            //JFreeChart mttfChart = GraphUtil.generateStdDevGraph("Mean time to Failure", buildMessages);
+            //JFreeChart mttrChart = GraphUtil.generateStdDevGraph("Mean time to Recovery", buildMessages);
 
             StoreUtil.storeGraph(StandardDeviationMetric.class, run, stddevChart);
-            StoreUtil.storeGraph(MTTFMetric.class, run, mttfChart);
-            StoreUtil.storeGraph(MTTRMetric.class, run, mttrChart);
+            //StoreUtil.storeGraph(MTTFMetric.class, run, mttfChart);
+            //StoreUtil.storeGraph(MTTRMetric.class, run, mttrChart);
         }
 
         private List<BuildMessage> cutListByAgoDays(List<BuildMessage> builds, int daysAgo) {

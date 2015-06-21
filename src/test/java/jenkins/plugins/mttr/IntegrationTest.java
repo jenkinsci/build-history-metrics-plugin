@@ -40,7 +40,6 @@ public class IntegrationTest {
     }
     private TestBuilder getTestBuilder() {
         return new TestBuilder() {
-            private int res=0;
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                                    BuildListener listener) throws InterruptedException, IOException {
                 build.getWorkspace().child("abc.txt").write("hello","UTF-8");
@@ -110,49 +109,37 @@ public class IntegrationTest {
     }
 
     @Test
-    public void should_store_mttr_properties_file_correctly() throws Exception {
+    public void should_store_properties_files_correctly() throws Exception {
         project.scheduleBuild2(0).get();
 
-        File propertyFile = new File(rootDirectory + StoreUtil.MTTR_PROPERTY_FILE);
-        assertTrue(propertyFile.exists());
+        File mttrPropertyFile = new File(rootDirectory + StoreUtil.MTTR_PROPERTY_FILE);
+        assertTrue(mttrPropertyFile.exists());
 
-        List<String> lines = Files.readLines(propertyFile, Charset.forName(UTF_8));
+        File mttfPropertyFile = new File(rootDirectory + StoreUtil.MTTF_PROPERTY_FILE);
+        assertTrue(mttfPropertyFile.exists());
 
-        assertThat(lines.get(0), is(String.format("%s=0", MetricsAction.MTTR_LAST_7_DAYS)));
-        assertThat(lines.get(1), is(String.format("%s=0", MetricsAction.MTTR_LAST_30_DAYS)));
-        assertThat(lines.get(2), is(String.format("%s=0", MetricsAction.MTTR_ALL_BUILDS)));
+        File stdDevPropertyFile = new File(rootDirectory + StoreUtil.STDDEV_PROPERTY_FILE);
+        assertTrue(stdDevPropertyFile.exists());
+
+        List<String> mttrLines = Files.readLines(mttrPropertyFile, Charset.forName(UTF_8));
+        List<String> mttfLines = Files.readLines(mttfPropertyFile, Charset.forName(UTF_8));
+        List<String> stdDevLines = Files.readLines(stdDevPropertyFile, Charset.forName(UTF_8));
+
+        assertThat(mttrLines.get(0), is(String.format("%s=0", MetricsAction.MTTR_LAST_7_DAYS)));
+        assertThat(mttrLines.get(1), is(String.format("%s=0", MetricsAction.MTTR_LAST_30_DAYS)));
+        assertThat(mttrLines.get(2), is(String.format("%s=0", MetricsAction.MTTR_ALL_BUILDS)));
+
+        assertThat(mttfLines.get(0), is(String.format("%s=0", MetricsAction.MTTF_LAST_7_DAYS)));
+        assertThat(mttfLines.get(1), is(String.format("%s=0", MetricsAction.MTTF_LAST_30_DAYS)));
+        assertThat(mttfLines.get(2), is(String.format("%s=0", MetricsAction.MTTF_ALL_BUILDS)));
+
+        assertThat(stdDevLines.get(0), is(String.format("%s=0", MetricsAction.STDDEV_LAST_7_DAYS)));
+        assertThat(stdDevLines.get(1), is(String.format("%s=0", MetricsAction.STDDEV_LAST_30_DAYS)));
+        assertThat(stdDevLines.get(2), is(String.format("%s=0", MetricsAction.STDDEV_ALL_BUILDS)));
     }
 
     @Test
-    public void should_store_mttf_properties_file_correctly() throws Exception {
-        project.scheduleBuild2(0).get();
-
-        File propertyFile = new File(rootDirectory + StoreUtil.MTTF_PROPERTY_FILE);
-        assertTrue(propertyFile.exists());
-
-        List<String> lines = Files.readLines(propertyFile, Charset.forName(UTF_8));
-
-        assertThat(lines.get(0), is(String.format("%s=0", MetricsAction.MTTF_LAST_7_DAYS)));
-        assertThat(lines.get(1), is(String.format("%s=0", MetricsAction.MTTF_LAST_30_DAYS)));
-        assertThat(lines.get(2), is(String.format("%s=0", MetricsAction.MTTF_ALL_BUILDS)));
-    }
-
-    @Test
-    public void should_store_stddev_properties_file_correctly() throws Exception {
-        project.scheduleBuild2(0).get();
-
-        File propertyFile = new File(rootDirectory + StoreUtil.STDDEV_PROPERTY_FILE);
-        assertTrue(propertyFile.exists());
-
-        List<String> lines = Files.readLines(propertyFile, Charset.forName(UTF_8));
-
-        assertThat(lines.get(0), is(String.format("%s=0", MetricsAction.STDDEV_LAST_7_DAYS)));
-        assertThat(lines.get(1), is(String.format("%s=0", MetricsAction.STDDEV_LAST_30_DAYS)));
-        assertThat(lines.get(2), is(String.format("%s=0", MetricsAction.STDDEV_ALL_BUILDS)));
-    }
-
-    @Test
-    public void should_store_all_build_message_when_store_file_not_exist() throws Exception {
+    public void should_store_all_build_messages_when_build_message_file_does_not_exist() throws Exception {
         project.scheduleBuild2(0).get();
         project.scheduleBuild2(1).get();
 
