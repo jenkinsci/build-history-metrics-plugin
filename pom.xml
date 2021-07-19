@@ -28,7 +28,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
+            <version>[30.0-jre,)</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -42,6 +42,11 @@
             <id>mcgin</id>
             <name>Aidan McGinley</name>
             <email>aidan@aidanmcginley.com</email>
+        </developer>
+        <developer>
+            <id>nickcharsley</id>
+            <name>Nick Charsley</name>
+            <email>nick@oldnicksoftware.co.uk</email>
         </developer>
     </developers>
 
@@ -111,14 +116,14 @@
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
+            <url>https://repo.jenkins-ci.org/public/</url>
         </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
             <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
+            <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
 </project>
