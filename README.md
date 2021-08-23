@@ -1,7 +1,7 @@
 Jenkins Build History Metrics Plugin
 ======================================
 
-[![Build Status](https://ci.jenkins.io/job/Plugins/job/configuration-as-code-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/configuration-as-code-plugin/job/master/)
+[![Build Status](https://ci.jenkins.io/job/Plugins/job/build-history-metrics-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/build-history-metrics-plugin/job/master/)
 
 This plugin calculates the following metrics for all of your builds once
 installed:
