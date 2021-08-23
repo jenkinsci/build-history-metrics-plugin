@@ -1,5 +1,6 @@
 package jenkins.plugins.model;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 public class BuildMessage implements Comparator<BuildMessage>, Comparable<BuildMessage> {
