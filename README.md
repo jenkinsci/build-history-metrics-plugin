@@ -1,18 +1,29 @@
 Jenkins Build History Metrics Plugin
 ======================================
 
-This plugin provides metrics based on all historical builds for a job.
+[![Build Status](https://ci.jenkins.io/job/Plugins/job/configuration-as-code-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/configuration-as-code-plugin/job/master/)
 
-Currently supported metrics
-- Mean time to Failure
-- Mean time to Recovery
-- Build Time Standard Deviation
+This plugin calculates the following metrics for all of your builds once
+installed:
 
-Roadmap
-- MTTF columns in list view
-- Time series charts for metrics
+-   Mean Time To Failure (MTTF)
+-   Mean Time To Recovery (MTTR)
+-   Standard Deviation of Build Times
 
-See https://wiki.jenkins-ci.org/display/JENKINS/Build+History+Metrics+Plugin for more information.
+The calculated metrics are displayed in a table on each jobs page
+showing the metric for the last 7 days, last 30 days and all time.  The
+table looks something like this:  
+![](https://wiki.jenkins.io/download/attachments/74417004/build-history-metrics-plugin-table.jpg?version=1&modificationDate=1433604472000&api=v2)
 
-[![Build Status](https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/build-history-metrics-plugin)](https://jenkins.ci.cloudbees.com/job/plugins/job/build-history-metrics-plugin/)
+## Changelog
+
+### 1.2
+
+-   Standard deviation for build times is now calculated and displayed
+-   Some styling changes for the table to make it look a bit better
+
+### 1.1
+
+-   First stable release that is a fork of an old plugin, refactored
+    with more tests and extended to include both MTTF and MTTR metrics
 
