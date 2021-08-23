@@ -27,7 +27,10 @@ public class ReadUtil {
             String filename = StoreUtil.getPropertyFilename(metricType);
             File file = new File(rootDir.getAbsolutePath() + File.separator + filename);
             Properties properties = new Properties();
-            properties.load(new FileInputStream(file));
+            try(FileInputStream fis = new FileInputStream(file)) {
+                properties.load(fis);
+            }
+
             return properties;
         } catch (IOException e) {
             LOGGER.warning(String.format("get property file error : %s", e.getMessage()));
@@ -37,12 +40,7 @@ public class ReadUtil {
 
     public static String getColumnResult(Job job, String resultKey) {
         Properties properties = ReadUtil.getJobProperties(MTTRMetric.class, job);
-        if (properties == null) {
-            LOGGER.info("property file can't find");
-            return "N/A";
-        }
-
-        long result = Long.valueOf(properties.get(resultKey).toString());
+        long result = Long.parseLong(properties.get(resultKey).toString());
         return Util.getPastTimeString(result);
     }
 
@@ -52,8 +50,8 @@ public class ReadUtil {
             List<BuildMessage> buildMessages = Lists.newArrayList();
             for (String line : fileLines) {
                 String[] build = line.split(",");
-                buildMessages.add(new BuildMessage(Long.valueOf(build[0]),
-                        Long.valueOf(build[1]), Long.valueOf(build[2]), build[3]));
+                buildMessages.add(new BuildMessage(Long.parseLong(build[0]),
+                        Long.parseLong(build[1]), Long.parseLong(build[2]), build[3]));
             }
             Collections.sort(buildMessages);
             return buildMessages;

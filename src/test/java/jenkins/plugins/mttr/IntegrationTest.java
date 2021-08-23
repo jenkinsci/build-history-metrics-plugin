@@ -58,7 +58,7 @@ public class IntegrationTest {
         }
 
         HtmlPage page = jenkins.createWebClient().goTo("job/test/");
-        HtmlElement metricsTable = page.getBody().getElementById("aggregate-build-metrics");
+        HtmlElement metricsTable = page.getHtmlElementById("aggregate-build-metrics");
         assertEquals("Metrics should be in a table", metricsTable.getNodeName(), "table");
 
         verifyMetricRow(metricsTable, MetricsAction.MTTF_LAST_7_DAYS, "Last 7 Days");
@@ -75,7 +75,7 @@ public class IntegrationTest {
     }
 
     private HtmlElement verifyMetricRow(HtmlElement metricsTable, String metricElementIdentifier, String expectedLabel) {
-        HtmlElement row = metricsTable.getElementById(metricElementIdentifier);
+        HtmlElement row = metricsTable.getOneHtmlElementByAttribute("tr", "id", metricElementIdentifier);
         assertEquals(metricElementIdentifier + "Metric should be in a row", row.getNodeName(), "tr");
         String label = row.getOneHtmlElementByAttribute("td", "class", "metric-label").getTextContent();
         assertEquals(metricElementIdentifier + "Metric labeled incorrectly", expectedLabel, label);
