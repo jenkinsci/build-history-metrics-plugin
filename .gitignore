@@ -6,3 +6,4 @@ target
 *.iws
 work
 start-ssh-agent.sh
+.DS_Store
