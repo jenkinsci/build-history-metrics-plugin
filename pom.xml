@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>build-history-metrics-plugin</artifactId>
-    <version>${revision}${changelist}</version>
+    <version>${changelist}</version>
     <packaging>hpi</packaging>
     <name>Build History Metrics plugin</name>
     <description>Provides build metrics that encompass the history of all the runs</description>
@@ -16,7 +16,7 @@
 
     <properties>
         <revision>2.0</revision>
-        <changelist>-SNAPSHOT</changelist>
+        <changelist>999999-SNAPSHOT</changelist>
         <checkstyle.skip>true</checkstyle.skip>
         <requiredcoverage>1.0</requiredcoverage>
         <jenkins.version>2.277.1</jenkins.version>
