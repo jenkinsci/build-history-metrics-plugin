@@ -6,7 +6,6 @@ import com.google.common.io.Files;
 import hudson.Launcher;
 import hudson.model.*;
 import hudson.tasks.Shell;
-import hudson.views.ListViewColumn;
 import jenkins.plugins.util.StoreUtil;
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,13 +16,10 @@ import org.jvnet.hudson.test.TestBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**************************************************************************************************\
