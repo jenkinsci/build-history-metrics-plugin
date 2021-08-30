@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class MetricsActionTest {
     @Rule
@@ -47,9 +48,24 @@ public class MetricsActionTest {
 
     private static final String ZERO_TIME_AS_STRING = "0 ms";
 
+		@Test
+		public void test_MetricsActionDisplayName() throws IOException {
+			AbstractProject project = CreateMockProject();
+			MetricsAction action = new MetricsAction(project);
+
+			assertNull(action.getDisplayName());
+		}
+
+		@Test
+		public void test_MetricsActionUrlName() throws IOException {
+			AbstractProject project = CreateMockProject();
+			MetricsAction action = new MetricsAction(project);
+
+			assertNull(action.getUrlName());
+		}
 
     @Test
-    public void GetMetricMap_Should_ReturnAMapWithTheMetricsPopulated() throws IOException {
+    public void test_GetMetricMapShouldReturnAMapWithTheMetricsPopulated() throws IOException {
         AbstractProject project = CreateMockProject();
         CreateAMockMTTRPropertiesFileIn(project.getRootDir());
         CreateAMockMTTFPropertiesFileIn(project.getRootDir());
@@ -80,7 +96,7 @@ public class MetricsActionTest {
                 EXPECTED_STDDEV_ALL_AS_STRING, map.get(MetricsAction.STDDEV_ALL_BUILDS));
     }
     @Test
-    public void GetMetricMap_Should_ReturnAMapWithTheZeroValueMetrics_When_PropertiesFilesDoNotExist() throws IOException {
+    public void test_GetMetricMapShouldReturnAMapWithTheZeroValueMetricsWhenPropertiesFilesDoNotExist() throws IOException {
         AbstractProject project = CreateMockProject();
 
         MetricsAction action = new MetricsAction(project);
@@ -109,7 +125,7 @@ public class MetricsActionTest {
     }
 
     @Test
-    public void ResultColumnsShouldReturnExpectedValues() throws IOException {
+    public void test_ResultColumnsShouldReturnExpectedValues() throws IOException {
         AbstractProject project = CreateMockProject();
         CreateAMockMTTRPropertiesFileIn(project.getRootDir());
 

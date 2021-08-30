@@ -16,12 +16,26 @@
 
     <properties>
         <revision>2.0</revision>
+        <java.level>8</java.level>
         <changelist>999999-SNAPSHOT</changelist>
         <checkstyle.skip>true</checkstyle.skip>
-        <requiredcoverage>1.0</requiredcoverage>
         <jenkins.version>2.277.1</jenkins.version>
-        <java.level>8</java.level>
+        <workflow-jenkins-plugin.version>1.11</workflow-jenkins-plugin.version>
+        <requiredcoverage>0.85</requiredcoverage>
     </properties>
+
+    <!-- Manage Jenkins dependency versions in one location -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.jenkins.tools.bom</groupId>
+                <artifactId>bom-2.277.x</artifactId>
+                <version>887.vae9c8ac09ff7</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -31,14 +45,40 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>[30.0-jre,)</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.3</version>
+        </dependency>
+        <!-- BOM Managed dependencies -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        
+        <!-- BOM Managed test dependencies -->
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-cps</artifactId>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-job</artifactId>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-basic-steps</artifactId>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-durable-task-step</artifactId>
+            <scope>test</scope>
+            <type>jar</type>
         </dependency>
     </dependencies>
 
@@ -48,6 +88,11 @@
             <name>Aidan McGinley</name>
             <email>aidan@aidanmcginley.com</email>
         </developer>
+        <developer>
+            <id>nickcharsley</id>
+            <name>Nick Charsley</name>
+            <email>nick@oldnicksoftware.co.uk</email>
+        </developer>        
     </developers>
 
     <scm>
@@ -73,7 +118,17 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.5.201505241946</version>
+                <version>0.8.7</version>
+                <configuration>
+                    <excludes>
+                        <!-- Interfaces -->
+                        <exclude>jenkins/plugins/model/AggregateBuildMetric.class</exclude>
+                        <exclude>jenkins/plugins/mttr/ResultColumn.class</exclude>
+                        
+                        <!-- 'Generated' classes -->
+                        <exclude>jenkins/plugins/mttr/Messages.class</exclude>                        
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
@@ -101,7 +156,7 @@
                                         <limit>
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.76</minimum>
+                                            <minimum>${requiredcoverage}</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
