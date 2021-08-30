@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-run hpi</actionName>
+            <displayName>run hpi</displayName>
+            <goals>
+                <goal>hpi:run</goal>
+            </goals>
+        </action>
+    </actions>
