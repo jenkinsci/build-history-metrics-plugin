@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.0</version>
+        <version>4.8</version>
         <relativePath />
     </parent>
 
@@ -21,6 +21,8 @@
         <jenkins.version>2.277.1</jenkins.version>
         <workflow-jenkins-plugin.version>1.11</workflow-jenkins-plugin.version>
         <requiredcoverage>0.97</requiredcoverage>
+        <!-- Skip checkstyle on Git Checkin -->
+        <checkstyle.skip>true</checkstyle.skip>
     </properties>
 
     <!-- Manage Jenkins dependency versions in one location -->
