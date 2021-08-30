@@ -29,47 +29,47 @@ public class MTTRMetricTest {
   public void setUp() throws Exception {}
 
   @Test
-  public void should_return_0_second_when_first_success_build() {
+  public void test_ShouldReturn0SecondWhenFirstSuccessfulBuild() {
     runAndVerifyResult(Lists.newArrayList(FIRST_BUILD), 0L, 0);
   }
 
   @Test
-  public void should_return_0_second_when_first_failed_build() {
+  public void test_ShouldReturn0SecondWhenFirstFailedBuild() {
     runAndVerifyResult(Lists.newArrayList(SECOND_BUILD), 0L, 0);
   }
 
   @Test
-  public void should_return_0_second_when_2_failed_builds() {
+  public void test_ShouldReturn0SecondWhen2FailedBuilds() {
     List<BuildMessage> builds = Lists.newArrayList(SECOND_BUILD, THIRD_BUILD);
     runAndVerifyResult(builds, 0, 0);
   }
 
   @Test
-  public void should_return_0_seconds_when_2_success_builds() {
+  public void test_ShouldReturn0SecondsWhen2SuccessfulBuild() {
     List<BuildMessage> builds = Lists.newArrayList(FIRST_BUILD, FOURTH_BUILD);
     runAndVerifyResult(builds, 0, 0);
   }
 
   @Test
-  public void should_return_0_seconds_when_1_success_and_1_failed_builds() {
+  public void test_ShouldReturn0SecondsWhen1successfulAnd1FailedBuild() {
     List<BuildMessage> builds = Lists.newArrayList(FIRST_BUILD, THIRD_BUILD);
     runAndVerifyResult(builds, 0, 0);
   }
 
   @Test
-  public void should_return_failed_info_when_1_failed_and_1_success_builds() {
+  public void test_ShouldReturnFailedInfoWhen1FailedAnd1SuccessfulBuild() {
     List<BuildMessage> builds = Lists.newArrayList(THIRD_BUILD, FOURTH_BUILD);
     runAndVerifyResult(builds, 1000L, 1);
   }
 
   @Test
-  public void should_return_failed_info_when_2_failed_and_1_success_builds() {
+  public void test_ShouldReturnFailedInfoWhen2FailedAnd1SuccessfulBuild() {
     List<BuildMessage> builds = Lists.newArrayList(SECOND_BUILD, THIRD_BUILD, FOURTH_BUILD);
     runAndVerifyResult(builds, 2000L, 1);
   }
 
   @Test
-  public void should_return_failed_info_when_have_all_builds() {
+  public void test_ShouldReturnFailedInfoWhenHaveAllBuild() {
     List<BuildMessage> builds =
         Lists.newArrayList(
             FIRST_BUILD, SECOND_BUILD, THIRD_BUILD, FOURTH_BUILD, FIFTH_BUILD, SIXTH_BUILD);
@@ -77,7 +77,7 @@ public class MTTRMetricTest {
   }
 
   @Test
-  public void should_return_failed_info_when_have_all_builds_regardless_of_order_they_are_added() {
+  public void test_ShouldReturnFailedInfoWhenHaveAllBuildsRegardlessOfOrderTheyAreAdded() {
     List<BuildMessage> builds =
         Lists.newArrayList(
             SIXTH_BUILD, FIFTH_BUILD, FOURTH_BUILD, THIRD_BUILD, SECOND_BUILD, FIRST_BUILD);

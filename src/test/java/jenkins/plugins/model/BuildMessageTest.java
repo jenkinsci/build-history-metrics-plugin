@@ -22,15 +22,45 @@ public class BuildMessageTest {
       new BuildMessage(5, TODAY + 4000, 5500, Result.FAILURE.toString());
   private static final BuildMessage SIXTH_BUILD =
       new BuildMessage(6, TODAY + 5000, 6500, Result.SUCCESS.toString());
+  private static final BuildMessage SIXTH_BUILD_II =
+      new BuildMessage(6, TODAY + 6000, 7000, Result.UNSTABLE.toString());
+
+  private static final BuildMessage NULL_BUILD = null;
 
   @Test
-  public void FirstBuildShouldBeTheSameAsFirstBuildWhenCompared() {
+  public void test_FirstBuildShouldBeTheSameAsFirstBuildWhenCompared() {
     assertTrue(FIRST_BUILD.compareTo(FIRST_BUILD) == 0);
   }
 
   @Test
-  public void SecondBuildShouldBeGreaterThanFirstBuildWhenCompared() {
+  public void test_SecondBuildShouldBeGreaterThanFirstBuildWhenCompared() {
     assertTrue(FIRST_BUILD.compareTo(SECOND_BUILD) < 0);
     assertTrue(SECOND_BUILD.compareTo(FIRST_BUILD) > 0);
+  }
+
+  @Test
+  public void test_BuildMessageIsEqualToIself() {
+    assertTrue(THIRD_BUILD.equals(THIRD_BUILD));
+  }
+
+  @Test
+  public void test_BuildMessageIsNotEqualToNull() {
+    assertFalse(FOURTH_BUILD.equals(NULL_BUILD));
+  }
+
+  @Test
+  public void test_BuildMessageIsNotEqualToDifferentType() {
+    assertFalse(FIFTH_BUILD.equals(this));
+  }
+
+  @Test
+  public void test_BuildMessageIsNotEqualToDifferentBuildMessage() {
+    assertFalse(SIXTH_BUILD.equals(FIRST_BUILD));
+  }
+
+  @Test
+  public void test_BuildMessageIsEqualToForSameBuildNumber() {
+    assertTrue(SIXTH_BUILD.equals(SIXTH_BUILD_II));
+    assertEquals(SIXTH_BUILD.hashCode(), SIXTH_BUILD_II.hashCode());
   }
 }

@@ -28,27 +28,27 @@ public class StandardDeviationMetricTest {
       new BuildMessage(8, TODAY + 8000, 8500, Result.UNSTABLE.toString());
 
   @Test
-  public void should_return_0_seconds_when_first_success_build() {
+  public void test_ShouldReturn0SecondsWhenFirstSuccessBuild() {
     runAndVerifyResult(Lists.newArrayList(FIRST_BUILD), 0, 1);
   }
 
   @Test
-  public void should_return_0_seconds_when_first_failure_build() {
+  public void test_ShouldReturn0SecondsWhenFirstFailureBuild() {
     runAndVerifyResult(Lists.newArrayList(SECOND_BUILD), 0, 1);
   }
 
   @Test
-  public void should_return_0_seconds_when_first_aborted_build() {
+  public void test_ShouldReturn0SecondsWhenFirstAbortedBuild() {
     runAndVerifyResult(Lists.newArrayList(SEVENTH_BUILD), 0, 1);
   }
 
   @Test
-  public void should_return_0_seconds_when_first_unstable_build() {
+  public void test_ShouldReturn0SecondsWhenFirstUnstableBuild() {
     runAndVerifyResult(Lists.newArrayList(EIGHTH_BUILD), 0, 1);
   }
 
   @Test
-  public void should_return_correct_stddev_with_8_builds() {
+  public void test_ShouldReturnCorrectStddevWith8builds() {
     runAndVerifyResult(
         Lists.newArrayList(
             FIRST_BUILD,
@@ -64,7 +64,7 @@ public class StandardDeviationMetricTest {
   }
 
   @Test
-  public void should_return_stddev_when_have_all_builds_regardless_of_order_they_are_added() {
+  public void test_ShouldReturnStddevWhenHaveAllBuildsRegardlessOfOrderTheyAreAdded() {
     List<BuildMessage> builds =
         Lists.newArrayList(
             EIGHTH_BUILD,
@@ -79,7 +79,7 @@ public class StandardDeviationMetricTest {
   }
 
   @Test
-  public void should_return_correct_stddev_with_2_builds() {
+  public void test_ShouldReturnCorrectStddevWith2Builds() {
     runAndVerifyResult(Lists.newArrayList(FIRST_BUILD, SECOND_BUILD), 707L, 2);
   }
 

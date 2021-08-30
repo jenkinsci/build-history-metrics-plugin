@@ -6,7 +6,7 @@ import hudson.model.Run;
 import hudson.util.RunList;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -20,13 +20,13 @@ import org.jfree.chart.JFreeChart;
 public class StoreUtil {
 
   private static final Logger LOGGER = Logger.getLogger(StoreUtil.class.getName());
+  public static final String IMG_TYPE = "png";
   public static final String MTTR_PROPERTY_FILE = "mttr.properties";
   public static final String MTTF_PROPERTY_FILE = "mttf.properties";
   public static final String STDDEV_PROPERTY_FILE = "stddev.properties";
-  public static final String MTTR_GRAPH_FILE = "mttr.jpg";
-  public static final String MTTF_GRAPH_FILE = "mttf.jpg";
-  public static final String STDDEV_GRAPH_FILE = "stddev.jpg";
-  public static final String UTF_8 = "UTF-8";
+  public static final String MTTR_GRAPH_FILE = "mttr." + IMG_TYPE;
+  public static final String MTTF_GRAPH_FILE = "mttf." + IMG_TYPE;
+  public static final String STDDEV_GRAPH_FILE = "stddev." + IMG_TYPE;
 
   @ExcludeFromCoverage_FakeGenerated
   private StoreUtil() {
@@ -62,7 +62,7 @@ public class StoreUtil {
       File propertiesFile =
           new File(
               run.getParent().getRootDir().getAbsolutePath() + File.separator + propertyFilename);
-      Files.write(fileContent.toString(), propertiesFile, Charset.forName(UTF_8));
+      Files.write(fileContent.toString(), propertiesFile, StandardCharsets.UTF_8);
 
     } catch (IOException e) {
       LOGGER.warning(String.format("store property error:%s", e.getMessage()));
@@ -75,7 +75,7 @@ public class StoreUtil {
       File graphFile =
           new File(run.getParent().getRootDir().getAbsolutePath() + File.separator + graphFileName);
 
-      ImageIO.write(chart.createBufferedImage(500, 500), "jpg", graphFile);
+      ImageIO.write(chart.createBufferedImage(500, 500), IMG_TYPE, graphFile);
     } catch (IOException e) {
       LOGGER.warning(String.format("store property error:%s", e.getMessage()));
     }
@@ -114,13 +114,13 @@ public class StoreUtil {
       Run build = i.next();
       constructBuildInfoStringForRun(fileContent, build);
     }
-    Files.write(fileContent.toString(), storeFile, Charset.forName(UTF_8));
+    Files.write(fileContent.toString(), storeFile, StandardCharsets.UTF_8);
   }
 
   private static void appendBuildMessageToFile(Run build, File storeFile) throws IOException {
     StringBuilder fileContent = new StringBuilder();
     constructBuildInfoStringForRun(fileContent, build);
-    Files.append(fileContent.toString(), storeFile, Charset.forName(UTF_8));
+    Files.append(fileContent.toString(), storeFile, StandardCharsets.UTF_8);
   }
 
   private static void constructBuildInfoStringForRun(StringBuilder fileContent, Run build) {

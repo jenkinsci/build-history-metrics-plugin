@@ -20,7 +20,7 @@
         <changelist>999999-SNAPSHOT</changelist>
         <jenkins.version>2.277.1</jenkins.version>
         <workflow-jenkins-plugin.version>1.11</workflow-jenkins-plugin.version>
-        <requiredcoverage>0.85</requiredcoverage>
+        <requiredcoverage>0.97</requiredcoverage>
     </properties>
 
     <!-- Manage Jenkins dependency versions in one location -->
@@ -120,6 +120,9 @@
                 <version>0.8.7</version>
                 <configuration>
                     <excludes>
+                        <!-- Annotations -->
+                        <exclude>jenkins/plugins/annotations/**</exclude>
+
                         <!-- Interfaces -->
                         <exclude>jenkins/plugins/model/AggregateBuildMetric.class</exclude>
                         <exclude>jenkins/plugins/mttr/ResultColumn.class</exclude>

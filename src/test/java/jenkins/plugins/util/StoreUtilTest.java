@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import jenkins.plugins.model.AggregateBuildMetric;
+import jenkins.plugins.model.BuildMessage;
 import jenkins.plugins.model.MTTFMetric;
 import jenkins.plugins.model.MTTRMetric;
 import jenkins.plugins.model.StandardDeviationMetric;
@@ -25,18 +26,18 @@ public class StoreUtilTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-  public File createTempFileWithLines(int lines) throws IOException {
+  private File createTempFileWithLines(int lines) throws IOException {
     File existingFile = temporaryFolder.newFile();
-    BufferedWriter out = new BufferedWriter(new FileWriter(existingFile));
-    for (int i = 0; i < lines; i++) {
-      out.write("blah\n");
+    try (BufferedWriter out = new BufferedWriter(new FileWriter(existingFile))) {
+      for (int i = 0; i < lines; i++) {
+        out.write("blah\n");
+      }
     }
-    out.close();
     return existingFile;
   }
 
   @Test
-  public void StoreBuildMessages_ShouldAppendTheData_whenTheFileExists() throws Exception {
+  public void test_StoreBuildMessagesShouldAppendTheDataWhenTheFileExists() throws Exception {
     // Arrange
     Calendar timestamp = Calendar.getInstance();
     timestamp.setTimeInMillis(5678);
@@ -63,7 +64,7 @@ public class StoreUtilTest {
   }
 
   @Test
-  public void StoreBuildMessages_ShouldIncludeAllJobsFromParent_whenTheFileDoesNotExist()
+  public void test_StoreBuildMessagesShouldIncludeAllJobsFromParentWhenTheFileDoesNotExist()
       throws Exception {
     // Arrange
     File deletedFile = temporaryFolder.newFile();
@@ -87,7 +88,7 @@ public class StoreUtilTest {
     Mockito.when(build2.getTimestamp()).thenReturn(timestamp2);
 
     Job job = Mockito.mock(Job.class);
-    ArrayList<AbstractBuild> list = new ArrayList<AbstractBuild>();
+    ArrayList<AbstractBuild> list = new ArrayList<>();
     list.add(build);
     list.add(build2);
 
@@ -110,7 +111,75 @@ public class StoreUtilTest {
   }
 
   @Test
-  public void testStoreMTTRInfo() throws Exception {
+  public void test_StoreBuildMessagesUnwritableWhenTheFileExists() throws Exception {
+    // Arrange
+    Calendar timestamp = Calendar.getInstance();
+    timestamp.setTimeInMillis(5678);
+    File existingFile = createTempFileWithLines(2);
+    existingFile.setReadOnly();
+
+    AbstractBuild build = Mockito.mock(AbstractBuild.class);
+    Mockito.when(build.getResult()).thenReturn(Result.FAILURE);
+    Mockito.when(build.getNumber()).thenReturn(123);
+    Mockito.when(build.getTimestamp()).thenReturn(timestamp);
+    Mockito.when(build.getDuration()).thenReturn(5000L);
+
+    // Act
+    StoreUtil.storeBuildMessages(existingFile, build);
+
+    // Assert
+    String storedString = getLineFromFile(existingFile, 2);
+    int linesInFile = getLinesInFile(existingFile);
+
+    assertEquals("The file should have 2 lines", 2, linesInFile);
+    assertNotEquals(
+        "The data should be in the form BUILDNUMBER,STARTTIMEINMILLIS,DURATIONINMILLIS,RESULT",
+        "123,5678,5000,FAILURE",
+        storedString);
+  }
+
+  @Test
+  public void test_StoreBuildMessagesUnwritableWhenTheFileDoesNotExist() throws Exception {
+    // Arrange
+    File deletedFile = temporaryFolder.newFile();
+    deletedFile.setReadOnly();
+
+    Calendar timestamp = Calendar.getInstance();
+    timestamp.setTimeInMillis(12);
+    Calendar timestamp2 = Calendar.getInstance();
+    timestamp2.setTimeInMillis(67);
+
+    AbstractBuild build = Mockito.mock(AbstractBuild.class);
+    Mockito.when(build.getResult()).thenReturn(Result.FAILURE);
+    Mockito.when(build.getNumber()).thenReturn(34);
+    Mockito.when(build.getDuration()).thenReturn(56L);
+    Mockito.when(build.getTimestamp()).thenReturn(timestamp);
+
+    AbstractBuild build2 = Mockito.mock(AbstractBuild.class);
+    Mockito.when(build2.getResult()).thenReturn(Result.SUCCESS);
+    Mockito.when(build2.getNumber()).thenReturn(89);
+    Mockito.when(build2.getDuration()).thenReturn(10L);
+    Mockito.when(build2.getTimestamp()).thenReturn(timestamp2);
+
+    Job job = Mockito.mock(Job.class);
+    ArrayList<AbstractBuild> list = new ArrayList<>();
+    list.add(build);
+    list.add(build2);
+
+    Mockito.when(job.getBuilds()).thenReturn(RunList.fromRuns(list));
+    Mockito.when(build.getParent()).thenReturn(job);
+
+    // Act
+    StoreUtil.storeBuildMessages(deletedFile, build);
+
+    // Assert
+    int linesInFile = getLinesInFile(deletedFile);
+
+    assertEquals("The file should have 0 lines", 0, linesInFile);
+  }
+
+  @Test
+  public void test_StoreMTTRInfo() throws Exception {
     // Arrange
     File rootFolder = temporaryFolder.newFolder();
 
@@ -144,7 +213,7 @@ public class StoreUtilTest {
   }
 
   @Test
-  public void testStorStdDevInfo() throws Exception {
+  public void test_StoreStdDevInfo() throws Exception {
     // Arrange
     File rootFolder = temporaryFolder.newFolder();
 
@@ -177,8 +246,45 @@ public class StoreUtilTest {
     assertEquals("The second  stddev metric is wrong", "last30=3210", lines.get(1));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void test_GetPropertiesFileNameForUnknownProperty() {
+    StoreUtil.getPropertyFilename(BuildMessage.class);
+  }
+
   @Test
-  public void testStoreMTTFInfo() throws Exception {
+  public void test_StoreStdDevInfo_Unwritable() throws Exception {
+    // Arrange
+    File rootFolder = temporaryFolder.newFolder();
+    File propertiesFile =
+        new File(rootFolder.getAbsolutePath() + File.separator + "stddev.properties");
+    new BufferedWriter(new FileWriter(propertiesFile)).close();
+    propertiesFile.setReadOnly();
+
+    Job job = Mockito.mock(Job.class);
+    Mockito.when(job.getRootDir()).thenReturn(rootFolder);
+
+    AbstractBuild build = Mockito.mock(AbstractBuild.class);
+    Mockito.when(build.getParent()).thenReturn(job);
+
+    AggregateBuildMetric info = Mockito.mock(AggregateBuildMetric.class);
+    Mockito.when(info.calculateMetric()).thenReturn(76543210L);
+    Mockito.when(info.getName()).thenReturn("last7");
+
+    AggregateBuildMetric info2 = Mockito.mock(AggregateBuildMetric.class);
+    Mockito.when(info2.calculateMetric()).thenReturn(3210L);
+    Mockito.when(info2.getName()).thenReturn("last30");
+
+    // Act
+    StoreUtil.storeBuildMetric(StandardDeviationMetric.class, build, info, info2);
+
+    // Assert
+    assertTrue("The stddev.properties file is missing", propertiesFile.exists());
+    List<String> lines = Files.readLines(propertiesFile, Charset.defaultCharset());
+    assertEquals("Should have no lines", 0, lines.size());
+  }
+
+  @Test
+  public void test_StoreMTTFInfo() throws Exception {
     // Arrange
     File rootFolder = temporaryFolder.newFolder();
 
@@ -212,8 +318,13 @@ public class StoreUtilTest {
     assertEquals("The second  MTTF metric is wrong", "last30=3210", lines.get(1));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void test_GetGraphFileNameForUnknownProperty() {
+    StoreUtil.getGraphFilename(BuildMessage.class);
+  }
+
   @Test
-  public void testStoreGraph() throws Exception {
+  public void test_StoreMTTFGraph() throws Exception {
     // Arrange
     File rootFolder = temporaryFolder.newFolder();
 
@@ -230,8 +341,74 @@ public class StoreUtilTest {
     StoreUtil.storeGraph(MTTFMetric.class, build, chart);
 
     // Assert
-    File graphFile = new File(rootFolder.getAbsolutePath() + File.separator + "mttf.jpg");
-    assertTrue("The mttf.jpg file is missing: " + graphFile.toString(), graphFile.exists());
+    File graphFile = new File(rootFolder.getAbsolutePath() + File.separator + "mttf.png");
+    assertTrue("The mttf.png file is missing: " + graphFile.toString(), graphFile.exists());
+  }
+
+  @Test
+  public void test_StoreMTTRGraph() throws Exception {
+    // Arrange
+    File rootFolder = temporaryFolder.newFolder();
+
+    Job job = Mockito.mock(Job.class);
+    Mockito.when(job.getRootDir()).thenReturn(rootFolder);
+
+    AbstractBuild build = Mockito.mock(AbstractBuild.class);
+    Mockito.when(build.getParent()).thenReturn(job);
+
+    JFreeChart chart = Mockito.mock(JFreeChart.class);
+    Mockito.when(chart.createBufferedImage(500, 500))
+        .thenReturn(new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB));
+    // Act
+    StoreUtil.storeGraph(MTTRMetric.class, build, chart);
+
+    // Assert
+    File graphFile = new File(rootFolder.getAbsolutePath() + File.separator + "mttr.png");
+    assertTrue("The mttr.png file is missing: " + graphFile.toString(), graphFile.exists());
+  }
+
+  @Test
+  public void test_StoreSTDDEVGraph() throws Exception {
+    // Arrange
+    File rootFolder = temporaryFolder.newFolder();
+
+    Job job = Mockito.mock(Job.class);
+    Mockito.when(job.getRootDir()).thenReturn(rootFolder);
+
+    AbstractBuild build = Mockito.mock(AbstractBuild.class);
+    Mockito.when(build.getParent()).thenReturn(job);
+
+    JFreeChart chart = Mockito.mock(JFreeChart.class);
+    Mockito.when(chart.createBufferedImage(500, 500))
+        .thenReturn(new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB));
+    // Act
+    StoreUtil.storeGraph(StandardDeviationMetric.class, build, chart);
+
+    // Assert
+    File graphFile = new File(rootFolder.getAbsolutePath() + File.separator + "stddev.png");
+    assertTrue("The stdenv.png file is missing: " + graphFile.toString(), graphFile.exists());
+  }
+
+  @Test
+  public void test_StoreSTDDEVGraphUnwritable() throws Exception {
+    // Arrange
+    File rootFolder = temporaryFolder.newFolder();
+    rootFolder.setReadOnly();
+
+    Job job = Mockito.mock(Job.class);
+    Mockito.when(job.getRootDir()).thenReturn(rootFolder);
+
+    AbstractBuild build = Mockito.mock(AbstractBuild.class);
+    Mockito.when(build.getParent()).thenReturn(job);
+
+    JFreeChart chart = Mockito.mock(JFreeChart.class);
+    Mockito.when(chart.createBufferedImage(500, 500))
+        .thenReturn(new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB));
+    // Act
+    StoreUtil.storeGraph(StandardDeviationMetric.class, build, chart);
+
+    // Assert
+    assertTrue(true);
   }
 
   private int getLinesInFile(File file) throws IOException {

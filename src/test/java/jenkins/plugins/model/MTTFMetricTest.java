@@ -28,42 +28,42 @@ public class MTTFMetricTest {
   public void setUp() throws Exception {}
 
   @Test
-  public void should_return_0_second_when_first_success_build() {
+  public void test_ShouldReturn0SecondWhenFirstSuccessfulBuild() {
     runAndVerifyResult(Lists.newArrayList(FIRST_BUILD), 0L, 0);
   }
 
   @Test
-  public void should_return_0_second_when_2_failed_builds() {
+  public void test_ShouldReturn0SecondWhenSecondFailedBuild() {
     List<BuildMessage> builds = Lists.newArrayList(SECOND_BUILD, THIRD_BUILD);
     runAndVerifyResult(builds, 0, 0);
   }
 
   @Test
-  public void should_return_0_seconds_when_2_success_builds() {
+  public void test_ShouldReturn0SecondsWhen2SuccessfulBuild() {
     List<BuildMessage> builds = Lists.newArrayList(FIRST_BUILD, FOURTH_BUILD);
     runAndVerifyResult(builds, 0, 0);
   }
 
   @Test
-  public void should_0_seconds_when_1_failed_and_1_success_builds() {
+  public void test_Should0SecondsWhen1failedAnd1SuccessfulBuild() {
     List<BuildMessage> builds = Lists.newArrayList(THIRD_BUILD, FOURTH_BUILD);
     runAndVerifyResult(builds, 0, 0);
   }
 
   @Test
-  public void should_correct_metric_when_1_success_and_1_failed_builds() {
+  public void test_ShouldCorrectMetricWhen1SuccessAnd1FailedBuild() {
     List<BuildMessage> builds = Lists.newArrayList(FIRST_BUILD, SECOND_BUILD);
     runAndVerifyResult(builds, 1000L, 1);
   }
 
   @Test
-  public void should_correct_metric_when_2_success_and_1_failed_builds() {
+  public void test_ShouldCorrectMetricWhen2SuccessfulAnd1FailedBuild() {
     List<BuildMessage> builds = Lists.newArrayList(FIRST_BUILD, FOURTH_BUILD, FIFTH_BUILD);
     runAndVerifyResult(builds, 4000L, 1);
   }
 
   @Test
-  public void should_return_failed_info_when_have_all_builds() {
+  public void test_ShouldReturnFailedInfoWhenHaveAllBuilds() {
     List<BuildMessage> builds =
         Lists.newArrayList(
             FIRST_BUILD, SECOND_BUILD, THIRD_BUILD, FOURTH_BUILD, FIFTH_BUILD, SIXTH_BUILD);
@@ -71,7 +71,7 @@ public class MTTFMetricTest {
   }
 
   @Test
-  public void should_return_failed_info_when_have_all_builds_regardless_of_order_they_are_added() {
+  public void test_ShouldReturnFailedInfoWhenHaveAllBuildsRegardlessOfOrderTheyAreAdded() {
     List<BuildMessage> builds =
         Lists.newArrayList(
             SIXTH_BUILD, FIFTH_BUILD, FOURTH_BUILD, THIRD_BUILD, SECOND_BUILD, FIRST_BUILD);
@@ -79,7 +79,7 @@ public class MTTFMetricTest {
   }
 
   @Test
-  public void should_return_failed_info_when_starting_with_a_failed_build() {
+  public void test_ShouldReturnFailedInfoWhenStartingWithAFailedBuild() {
     List<BuildMessage> builds =
         Lists.newArrayList(SECOND_BUILD, THIRD_BUILD, FOURTH_BUILD, FIFTH_BUILD, SIXTH_BUILD);
     runAndVerifyResult(builds, 1000L, 1);
