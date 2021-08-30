@@ -1,9 +1,9 @@
 package jenkins.plugins.model;
 
 public interface AggregateBuildMetric {
-    int getOccurences();
+  int getOccurences();
 
-    long calculateMetric();
+  long calculateMetric();
 
-    String getName();
+  String getName();
 }

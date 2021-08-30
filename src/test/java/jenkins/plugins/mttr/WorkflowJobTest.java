@@ -1,24 +1,23 @@
 package jenkins.plugins.mttr;
 
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.gargoylesoftware.htmlunit.WebAssert;
 import com.gargoylesoftware.htmlunit.html.*;
 import com.google.common.io.Files;
 import hudson.model.*;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import jenkins.plugins.util.StoreUtil;
+import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
-import static junit.framework.TestCase.assertEquals;
-import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
-import org.jenkinsci.plugins.workflow.job.WorkflowJob;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 public class WorkflowJobTest {
   @Rule public JenkinsRule jenkins = new JenkinsRule();
@@ -42,7 +41,7 @@ public class WorkflowJobTest {
                 + "    }\n"
                 + "}",
             true));
-		//Standard View with no 'extra' columns
+    // Standard View with no 'extra' columns
     view = new ListView("wfj_viw");
     jenkins.getInstance().addView(view);
     rootDirectory = project.getRootDir() + File.separator;
@@ -153,8 +152,7 @@ public class WorkflowJobTest {
   }
 
   @Test
-  public void test_ShouldStoreAllBuildMessagesWhenBuildMessageFileDoesNotExist()
-      throws Exception {
+  public void test_ShouldStoreAllBuildMessagesWhenBuildMessageFileDoesNotExist() throws Exception {
     project.scheduleBuild2(0).get();
 
     File buildsMessageFile = new File(rootDirectory + MetricsAction.ALL_BUILDS_FILE_NAME);

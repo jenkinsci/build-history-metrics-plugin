@@ -1,12 +1,20 @@
 package jenkins.plugins.mttr;
 
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.gargoylesoftware.htmlunit.WebAssert;
 import com.gargoylesoftware.htmlunit.html.*;
 import com.google.common.io.Files;
 import hudson.Launcher;
 import hudson.model.*;
 import hudson.tasks.Shell;
-import hudson.views.ListViewColumn;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import jenkins.plugins.util.StoreUtil;
 import org.junit.Before;
 import org.junit.Rule;
@@ -14,25 +22,14 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-
-import static junit.framework.TestCase.assertEquals;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-/**************************************************************************************************\
+/**
+ * ************************************************************************************************\
  * FreeStyleProjectTest
- * 
- * Previously was IntegrationTest renamed as MTTR expanded to all jobs, this is regression
+ *
+ * <p>Previously was IntegrationTest renamed as MTTR expanded to all jobs, this is regression
+ *
  * @author nick
  */
-
 public class FreeStyleProjectTest {
 
   private FreeStyleProject project;
@@ -58,10 +55,10 @@ public class FreeStyleProjectTest {
     project.getBuildersList().add(new Shell("return `expr $BUILD_NUMBER % 2`"));
     project.getBuildersList().add(getTestBuilder());
 
-		//Standard View with no 'extra' columns
+    // Standard View with no 'extra' columns
     ListView lview = new ListView("fsp_view");
 
-		lview.setIncludeRegex(".*");
+    lview.setIncludeRegex(".*");
     view = lview;
 
     jenkins.getInstance().addView(lview);
@@ -112,7 +109,7 @@ public class FreeStyleProjectTest {
   @Test
   public void test_CanShowListView() throws Exception {
     HtmlPage page = jenkins.createWebClient().goTo(view.getUrl());
-    assertEquals(page.getWebResponse().getStatusCode(),200);
+    assertEquals(page.getWebResponse().getStatusCode(), 200);
   }
 
   @Test
@@ -171,8 +168,7 @@ public class FreeStyleProjectTest {
   }
 
   @Test
-  public void test_ShouldStoreAllBuildMessagesWhenBuildMessageFileDoesNotExist()
-      throws Exception {
+  public void test_ShouldStoreAllBuildMessagesWhenBuildMessageFileDoesNotExist() throws Exception {
     project.scheduleBuild2(0).get();
 
     File buildsMessageFile = new File(rootDirectory + MetricsAction.ALL_BUILDS_FILE_NAME);
