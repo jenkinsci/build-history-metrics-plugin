@@ -52,14 +52,16 @@ public class FreeStyleProjectTest {
   @Before
   public void setUp() throws Exception {
     project = jenkins.getInstance().createProject(FreeStyleProject.class, "fsp_test");
-		
-		if (System.getProperty("os.name").startsWith("Windows")) {
-			// includes: Windows 2000,  Windows 95, Windows 98, Windows NT, Windows Vista, Windows XP
-			project.getBuildersList().add(new Shell("exit %BUILD_NUMBER% % 2"));
+
+    if (System.getProperty("os.name").startsWith("Windows")) {
+      // includes: Windows 2000,  Windows 95, Windows 98, Windows NT, Windows Vista, Windows XP
+      project.getBuildersList().add(new Shell("SET /a ret=%BUILD_NUMBER%%%2\n" +
+				"exit %ret%"));
     } else {
       // everything else
-			project.getBuildersList().add(new Shell("return `expr $BUILD_NUMBER % 2`"));
-    }     project.getBuildersList().add(getTestBuilder());
+      project.getBuildersList().add(new Shell("return `expr $BUILD_NUMBER % 2`"));
+    }
+    project.getBuildersList().add(getTestBuilder());
 
     // Standard View with no 'extra' columns
     ListView lview = new ListView("fsp_view");
