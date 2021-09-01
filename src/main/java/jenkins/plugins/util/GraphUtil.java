@@ -10,9 +10,12 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class GraphUtil {
-    public static JFreeChart generateStdDevGraph(String title, List<BuildMessage> buildMessages) {
+    private static final Logger LOGGER = Logger.getLogger(GraphUtil.class.getName());
+
+	  public static JFreeChart generateStdDevGraph(String title, List<BuildMessage> buildMessages) {
         String chartTitle = title;
         String xAxisLabel = "X";
         String yAxisLabel = "Y";
@@ -25,23 +28,21 @@ public class GraphUtil {
         return chart;
     }
 
-    private static XYDataset createDataset(List<BuildMessage> buildMessages) {
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        XYSeries series1 = new XYSeries("Object 1");
+		private static XYDataset createDataset(List<BuildMessage> buildMessages) {
+			XYSeriesCollection dataset = new XYSeriesCollection();
+			XYSeries series1 = new XYSeries("Object 1");
 
-        //Need to optimise this, it's O(n^2)
-        for(int i=0; i<buildMessages.size(); i++){
+			// Need to optimise this, it's O(n^2)
+			for (int i = 0; i < buildMessages.size(); i++) {
 
-            List<BuildMessage> sublist = buildMessages.subList(i, buildMessages.size() - 1);
-            System.out.println(sublist.get(0));
-            StandardDeviationMetric metric = new StandardDeviationMetric("Graph", sublist);
-            series1.add(metric.calculateMetric(), i);
-        }
+				List<BuildMessage> sublist = buildMessages.subList(i, buildMessages.size());
+				LOGGER.info(sublist.get(0).toString());
+				StandardDeviationMetric metric = new StandardDeviationMetric("Graph", sublist);
+				series1.add(metric.calculateMetric(), i);
+			}
 
-        dataset.addSeries(series1);
+			dataset.addSeries(series1);
 
-
-        return dataset;
-    }
-
+			return dataset;
+		}
 }

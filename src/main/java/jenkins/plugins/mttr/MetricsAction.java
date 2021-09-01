@@ -13,12 +13,9 @@ import org.jfree.chart.JFreeChart;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
+import jenkins.model.TransientActionFactory;
 
 public class MetricsAction implements Action {
-
-    private static final Logger LOGGER = Logger.getLogger(MetricsAction.class.getName());
-
     public static final String MTTR_LAST_7_DAYS = "mttrLast7days";
     public static final String MTTR_LAST_30_DAYS = "mttrLast30days";
     public static final String MTTR_ALL_BUILDS = "mttrAllBuilds";
@@ -33,10 +30,10 @@ public class MetricsAction implements Action {
     
     public static final String ALL_BUILDS_FILE_NAME = "all_builds.mr";
 
-    private AbstractProject project;
+    private final Job job;
 
-    public MetricsAction(AbstractProject project) {
-        this.project = project;
+    public MetricsAction(Job job) {
+        this.job = job;
     }
 
     @Override
@@ -49,17 +46,18 @@ public class MetricsAction implements Action {
         return null;
     }
 
+		@Override
     public String getUrlName() {
         return null;
     }
 
     public Map<String, String> getMetricMap() throws IOException {
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, String> result = new HashMap<>();
 
         Properties properties = new Properties();
-        properties.putAll(ReadUtil.getJobProperties(MTTRMetric.class, project));
-        properties.putAll(ReadUtil.getJobProperties(MTTFMetric.class, project));
-        properties.putAll(ReadUtil.getJobProperties(StandardDeviationMetric.class, project));
+        properties.putAll(ReadUtil.getJobProperties(MTTRMetric.class, job));
+        properties.putAll(ReadUtil.getJobProperties(MTTFMetric.class, job));
+        properties.putAll(ReadUtil.getJobProperties(StandardDeviationMetric.class, job));
 
         result.put(MetricsAction.MTTR_LAST_7_DAYS, getPropertyOrDefault(properties, MetricsAction.MTTR_LAST_7_DAYS, "0"));
         result.put(MetricsAction.MTTR_LAST_30_DAYS, getPropertyOrDefault(properties, MetricsAction.MTTR_LAST_30_DAYS, "0"));
@@ -80,24 +78,27 @@ public class MetricsAction implements Action {
         String duration = properties.containsKey(key)?
                 properties.getProperty(key):defaultValue;
 
-        return Util.getPastTimeString(Long.parseLong(duration));
+        return Util.getTimeSpanString(Long.parseLong(duration));
     }
 
-    @Extension
-    public static final class ProjectActionFactory extends TransientProjectActionFactory {
+		@Extension
+		public static final class ActionFactory extends TransientActionFactory<Job> {
+			@Override
+			public Class<Job> type() {
+				return Job.class;
+			}
 
-        @Override
-        public Collection<? extends Action> createFor(AbstractProject target) {
-            return Collections.singleton(new MetricsAction(target));
-        }
-    }
+			@Override
+			public Collection<? extends Action> createFor(Job target) {
+				return Collections.singleton(new MetricsAction(target));
+			}
+		}
 
     @Extension
     public static class RunListenerImpl extends RunListener<Run> {
 
-        public RunListenerImpl() {}
-
-        public void onCompleted(Run run, TaskListener listener) {
+				@Override
+				public void onCompleted(Run run, TaskListener listener) {
             File storeFile = new File(run.getParent().getRootDir().getAbsolutePath()
                     + File.separator + ALL_BUILDS_FILE_NAME);
 
@@ -127,12 +128,8 @@ public class MetricsAction implements Action {
                     stdDevLast7DayInfo, stdDevLast30DayInfo, stdDevAllFailedInfo);
 
             JFreeChart stddevChart = GraphUtil.generateStdDevGraph("Standard Deviation of Build Time", buildMessages);
-            //JFreeChart mttfChart = GraphUtil.generateStdDevGraph("Mean time to Failure", buildMessages);
-            //JFreeChart mttrChart = GraphUtil.generateStdDevGraph("Mean time to Recovery", buildMessages);
 
             StoreUtil.storeGraph(StandardDeviationMetric.class, run, stddevChart);
-            //StoreUtil.storeGraph(MTTFMetric.class, run, mttfChart);
-            //StoreUtil.storeGraph(MTTRMetric.class, run, mttrChart);
         }
 
         private List<BuildMessage> cutListByAgoDays(List<BuildMessage> builds, int daysAgo) {
