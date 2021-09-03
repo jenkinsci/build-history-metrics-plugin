@@ -8,32 +8,44 @@ import java.io.IOException;
 import jenkins.plugins.util.ReadUtil;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class BuildMetricAllTimeResultColumn extends ListViewColumn implements ResultColumn {
+/**
+ * Class for All Builds Results Columns.
+ *
+ * @author mcgin
+ */
+public class BuildMetricAllTimeResultColumn extends ListViewColumn
+    implements ResultColumn {
 
+  /** The Constructor for BuildMetricAllTimeResultColumn. */
   @DataBoundConstructor
   public BuildMetricAllTimeResultColumn() {
     // NOP
   }
 
+  /** {@inheritDoc} */
   @Override
-  public String getResult(Job job) throws IOException {
+  public final String getResult(final Job job) throws IOException {
     return ReadUtil.getColumnResult(job, MetricsAction.MTTR_ALL_BUILDS);
   }
 
+  /** {@inheritDoc} */
   @Override
-  public String getGraph(Job job) throws IOException {
+  public final String getGraph(final Job job) throws IOException {
     return null;
   }
 
+  /** The Class that allows the Column to display in List Views. */
   @Extension
   public static class DescriptorImpl extends ListViewColumnDescriptor {
+    /** {@inheritDoc} */
     @Override
-    public String getDisplayName() {
+    public final String getDisplayName() {
       return Messages.allBuildsColumnTitle();
     }
 
+    /** {@inheritDoc} */
     @Override
-    public boolean shownByDefault() {
+    public final boolean shownByDefault() {
       return false;
     }
   }

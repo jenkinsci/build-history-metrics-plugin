@@ -42,7 +42,9 @@ public class BuildMetric7DaysResultColumnTest {
 
     ResultColumn resultColumn = new BuildMetric7DaysResultColumn();
     assertEquals(
-        "MTTR_All_DAYS is incorrect", EXPECTED_MTTR_7_AS_STRING, resultColumn.getResult(project));
+        "MTTR_All_DAYS is incorrect",
+        EXPECTED_MTTR_7_AS_STRING,
+        resultColumn.getResult(project));
   }
 
   /** Test of getGraph method, of class BuildMetricAllTimeResultColumn. */
@@ -61,13 +63,19 @@ public class BuildMetric7DaysResultColumnTest {
     return job;
   }
 
-  private void CreateAMockMTTRPropertiesFileIn(File rootFolder) throws IOException {
-    String s = MetricsAction.MTTR_LAST_7_DAYS + "\t" + EXPECTED_MTTR_7_MILLIS + "\n";
-    s += MetricsAction.MTTR_LAST_30_DAYS + "\t" + EXPECTED_MTTR_30_MILLIS + "\n";
+  private void CreateAMockMTTRPropertiesFileIn(File rootFolder)
+      throws IOException {
+    String s =
+        MetricsAction.MTTR_LAST_7_DAYS + "\t" + EXPECTED_MTTR_7_MILLIS + "\n";
+    s +=
+        MetricsAction.MTTR_LAST_30_DAYS + "\t" + EXPECTED_MTTR_30_MILLIS + "\n";
     s += MetricsAction.MTTR_ALL_BUILDS + "\t" + EXPECTED_MTTR_ALL_MILLIS + "\n";
 
     Files.write(
         s.getBytes(),
-        new File(rootFolder.getAbsolutePath() + File.separator + StoreUtil.MTTR_PROPERTY_FILE));
+        new File(
+            rootFolder.getAbsolutePath()
+                + File.separator
+                + StoreUtil.MTTR_PROPERTY_FILE));
   }
 }

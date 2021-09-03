@@ -28,7 +28,8 @@ public class StoreUtilTest {
 
   private File createTempFileWithLines(int lines) throws IOException {
     File existingFile = temporaryFolder.newFile();
-    try (BufferedWriter out = new BufferedWriter(new FileWriter(existingFile))) {
+    try (BufferedWriter out =
+        new BufferedWriter(new FileWriter(existingFile))) {
       for (int i = 0; i < lines; i++) {
         out.write("blah\n");
       }
@@ -37,7 +38,8 @@ public class StoreUtilTest {
   }
 
   @Test
-  public void test_StoreBuildMessagesShouldAppendTheDataWhenTheFileExists() throws Exception {
+  public void test_StoreBuildMessagesShouldAppendTheDataWhenTheFileExists()
+      throws Exception {
     // Arrange
     Calendar timestamp = Calendar.getInstance();
     timestamp.setTimeInMillis(5678);
@@ -64,8 +66,9 @@ public class StoreUtilTest {
   }
 
   @Test
-  public void test_StoreBuildMessagesShouldIncludeAllJobsFromParentWhenTheFileDoesNotExist()
-      throws Exception {
+  public void
+      test_StoreBuildMessagesShouldIncludeAllJobsFromParentWhenTheFileDoesNotExist()
+          throws Exception {
     // Arrange
     File deletedFile = temporaryFolder.newFile();
     deletedFile.delete();
@@ -96,7 +99,8 @@ public class StoreUtilTest {
     Mockito.when(build.getParent()).thenReturn(job);
 
     // Act
-    assertFalse("The file should not exist before the test runs", deletedFile.exists());
+    assertFalse(
+        "The file should not exist before the test runs", deletedFile.exists());
     StoreUtil.storeBuildMessages(deletedFile, build);
 
     // Assert
@@ -106,12 +110,19 @@ public class StoreUtilTest {
     int linesInFile = getLinesInFile(deletedFile);
 
     assertEquals("The file should have 2 lines", 2, linesInFile);
-    assertEquals("The data for the first build is not correct", "34,12,56,FAILURE", firstBuild);
-    assertEquals("The data for the second build is not correct", "89,67,10,SUCCESS", secondBuild);
+    assertEquals(
+        "The data for the first build is not correct",
+        "34,12,56,FAILURE",
+        firstBuild);
+    assertEquals(
+        "The data for the second build is not correct",
+        "89,67,10,SUCCESS",
+        secondBuild);
   }
 
   @Test
-  public void test_StoreBuildMessagesUnwritableWhenTheFileExists() throws Exception {
+  public void test_StoreBuildMessagesUnwritableWhenTheFileExists()
+      throws Exception {
     // Arrange
     Calendar timestamp = Calendar.getInstance();
     timestamp.setTimeInMillis(5678);
@@ -139,7 +150,8 @@ public class StoreUtilTest {
   }
 
   @Test
-  public void test_StoreBuildMessagesUnwritableWhenTheFileDoesNotExist() throws Exception {
+  public void test_StoreBuildMessagesUnwritableWhenTheFileDoesNotExist()
+      throws Exception {
     // Arrange
     File deletedFile = temporaryFolder.newFile();
     deletedFile.setReadOnly();
@@ -203,13 +215,17 @@ public class StoreUtilTest {
     // Assert
 
     File propertiesFile =
-        new File(rootFolder.getAbsolutePath() + File.separator + "mttr.properties");
+        new File(
+            rootFolder.getAbsolutePath() + File.separator + "mttr.properties");
     assertTrue("The mttr.properties file is missing", propertiesFile.exists());
 
-    List<String> lines = Files.readLines(propertiesFile, Charset.defaultCharset());
+    List<String> lines =
+        Files.readLines(propertiesFile, Charset.defaultCharset());
     assertEquals("Should have only 2 lines", 2, lines.size());
-    assertEquals("The first  MTTR metric is wrong", "last7=76543210", lines.get(0));
-    assertEquals("The second  MTTR metric is wrong", "last30=3210", lines.get(1));
+    assertEquals(
+        "The first  MTTR metric is wrong", "last7=76543210", lines.get(0));
+    assertEquals(
+        "The second  MTTR metric is wrong", "last30=3210", lines.get(1));
   }
 
   @Test
@@ -232,18 +248,26 @@ public class StoreUtilTest {
     Mockito.when(info2.getName()).thenReturn("last30");
 
     // Act
-    StoreUtil.storeBuildMetric(StandardDeviationMetric.class, build, info, info2);
+    StoreUtil.storeBuildMetric(
+        StandardDeviationMetric.class, build, info, info2);
 
     // Assert
 
     File propertiesFile =
-        new File(rootFolder.getAbsolutePath() + File.separator + "stddev.properties");
-    assertTrue("The stddev.properties file is missing", propertiesFile.exists());
+        new File(
+            rootFolder.getAbsolutePath()
+                + File.separator
+                + "stddev.properties");
+    assertTrue(
+        "The stddev.properties file is missing", propertiesFile.exists());
 
-    List<String> lines = Files.readLines(propertiesFile, Charset.defaultCharset());
+    List<String> lines =
+        Files.readLines(propertiesFile, Charset.defaultCharset());
     assertEquals("Should have only 2 lines", 2, lines.size());
-    assertEquals("The first  stddev metric is wrong", "last7=76543210", lines.get(0));
-    assertEquals("The second  stddev metric is wrong", "last30=3210", lines.get(1));
+    assertEquals(
+        "The first  stddev metric is wrong", "last7=76543210", lines.get(0));
+    assertEquals(
+        "The second  stddev metric is wrong", "last30=3210", lines.get(1));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -256,7 +280,10 @@ public class StoreUtilTest {
     // Arrange
     File rootFolder = temporaryFolder.newFolder();
     File propertiesFile =
-        new File(rootFolder.getAbsolutePath() + File.separator + "stddev.properties");
+        new File(
+            rootFolder.getAbsolutePath()
+                + File.separator
+                + "stddev.properties");
     new BufferedWriter(new FileWriter(propertiesFile)).close();
     propertiesFile.setReadOnly();
 
@@ -275,11 +302,14 @@ public class StoreUtilTest {
     Mockito.when(info2.getName()).thenReturn("last30");
 
     // Act
-    StoreUtil.storeBuildMetric(StandardDeviationMetric.class, build, info, info2);
+    StoreUtil.storeBuildMetric(
+        StandardDeviationMetric.class, build, info, info2);
 
     // Assert
-    assertTrue("The stddev.properties file is missing", propertiesFile.exists());
-    List<String> lines = Files.readLines(propertiesFile, Charset.defaultCharset());
+    assertTrue(
+        "The stddev.properties file is missing", propertiesFile.exists());
+    List<String> lines =
+        Files.readLines(propertiesFile, Charset.defaultCharset());
     assertEquals("Should have no lines", 0, lines.size());
   }
 
@@ -307,15 +337,19 @@ public class StoreUtilTest {
 
     // Assert
     File propertiesFile =
-        new File(rootFolder.getAbsolutePath() + File.separator + "mttf.properties");
+        new File(
+            rootFolder.getAbsolutePath() + File.separator + "mttf.properties");
     assertTrue(
         "The mttf.properties file is missing: " + propertiesFile.toString(),
         propertiesFile.exists());
 
-    List<String> lines = Files.readLines(propertiesFile, Charset.defaultCharset());
+    List<String> lines =
+        Files.readLines(propertiesFile, Charset.defaultCharset());
     assertEquals("Should have only 2 lines", 2, lines.size());
-    assertEquals("The first MTTF metric is wrong", "last7=76543210", lines.get(0));
-    assertEquals("The second  MTTF metric is wrong", "last30=3210", lines.get(1));
+    assertEquals(
+        "The first MTTF metric is wrong", "last7=76543210", lines.get(0));
+    assertEquals(
+        "The second  MTTF metric is wrong", "last30=3210", lines.get(1));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -341,8 +375,11 @@ public class StoreUtilTest {
     StoreUtil.storeGraph(MTTFMetric.class, build, chart);
 
     // Assert
-    File graphFile = new File(rootFolder.getAbsolutePath() + File.separator + "mttf.png");
-    assertTrue("The mttf.png file is missing: " + graphFile.toString(), graphFile.exists());
+    File graphFile =
+        new File(rootFolder.getAbsolutePath() + File.separator + "mttf.png");
+    assertTrue(
+        "The mttf.png file is missing: " + graphFile.toString(),
+        graphFile.exists());
   }
 
   @Test
@@ -363,8 +400,11 @@ public class StoreUtilTest {
     StoreUtil.storeGraph(MTTRMetric.class, build, chart);
 
     // Assert
-    File graphFile = new File(rootFolder.getAbsolutePath() + File.separator + "mttr.png");
-    assertTrue("The mttr.png file is missing: " + graphFile.toString(), graphFile.exists());
+    File graphFile =
+        new File(rootFolder.getAbsolutePath() + File.separator + "mttr.png");
+    assertTrue(
+        "The mttr.png file is missing: " + graphFile.toString(),
+        graphFile.exists());
   }
 
   @Test
@@ -385,8 +425,11 @@ public class StoreUtilTest {
     StoreUtil.storeGraph(StandardDeviationMetric.class, build, chart);
 
     // Assert
-    File graphFile = new File(rootFolder.getAbsolutePath() + File.separator + "stddev.png");
-    assertTrue("The stdenv.png file is missing: " + graphFile.toString(), graphFile.exists());
+    File graphFile =
+        new File(rootFolder.getAbsolutePath() + File.separator + "stddev.png");
+    assertTrue(
+        "The stdenv.png file is missing: " + graphFile.toString(),
+        graphFile.exists());
   }
 
   @Test

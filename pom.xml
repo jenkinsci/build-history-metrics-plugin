@@ -21,8 +21,9 @@
         <jenkins.version>2.277.1</jenkins.version>
         <workflow-jenkins-plugin.version>1.11</workflow-jenkins-plugin.version>
         <requiredcoverage>0.97</requiredcoverage>
-        <!-- Skip checkstyle on Git Checkin -->
+        <!-- Skip checkstyle on Git Checkin >
         <checkstyle.skip>true</checkstyle.skip>
+        <-->
     </properties>
 
     <!-- Manage Jenkins dependency versions in one location -->
@@ -49,6 +50,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.3</version>
+        </dependency>
+        <dependency>
+          <groupId>org.projectlombok</groupId>
+          <artifactId>lombok</artifactId>
+          <version>1.18.20</version>
+          <scope>provided</scope>
         </dependency>
         <!-- BOM Managed dependencies -->
         <dependency>
@@ -119,7 +126,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
                 <configuration>
                     <excludes>
                         <!-- Annotations -->
@@ -170,28 +176,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
-                <executions>
-                    <execution>
-                        <id>validate</id>
-                        <phase>validate</phase>
-                        <configuration>
-                            <configLocation>google_checks.xml</configLocation>
-                            <suppressionsLocation>suppressions.xml</suppressionsLocation>
-                            <encoding>UTF-8</encoding>
-                            <failsOnError>true</failsOnError>
-                            <consoleOutput>true</consoleOutput>
-                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                        </configuration>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>        
-            <plugin>
                 <groupId>com.theoryinpractise</groupId>
                 <artifactId>googleformatter-maven-plugin</artifactId>
                 <version>1.7.5</version>
@@ -206,17 +190,41 @@
                             <filterModified>false</filterModified>
                             <skip>false</skip>
                             <fixImports>true</fixImports>
-                            <maxLineLength>100</maxLineLength>
+                            <maxLineLength>80</maxLineLength>
                         </configuration>
                         <goals>
                             <goal>format</goal>
                         </goals>
-                        <phase>process-sources</phase>
+                        <!-- Put in validate phase to run BEFORE checkstyle -->
+                        <phase>validate</phase>
                     </execution>
                 </executions>
             </plugin>             
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <!-- Keep in same phase and after Google Formatter -->
+                        <phase>validate</phase>
+                        <configuration>
+                            <suppressionsLocation>suppressions.xml</suppressionsLocation>
+                            <encoding>UTF-8</encoding>
+                            <failsOnError>true</failsOnError>
+                            <consoleOutput>true</consoleOutput>
+                            <includeTestSourceDirectory>false</includeTestSourceDirectory>
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>        
         </plugins>
     </build>
+    
     <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
     <repositories>
         <repository>

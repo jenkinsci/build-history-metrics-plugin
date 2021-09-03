@@ -8,32 +8,44 @@ import java.io.IOException;
 import jenkins.plugins.util.ReadUtil;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class BuildMetric7DaysResultColumn extends ListViewColumn implements ResultColumn {
+/**
+ * Class for Last 7 Days Builds Results Columns.
+ *
+ * @author mcgin
+ */
+public class BuildMetric7DaysResultColumn extends ListViewColumn
+    implements ResultColumn {
 
+  /** The Constructor for BuildMetric7DaysResultColumn. */
   @DataBoundConstructor
   public BuildMetric7DaysResultColumn() {
     // NOP
   }
 
+  /** {@inheritDoc} */
   @Override
-  public String getResult(Job job) throws IOException {
+  public final String getResult(final Job job) throws IOException {
     return ReadUtil.getColumnResult(job, MetricsAction.MTTR_LAST_7_DAYS);
   }
 
+  /** {@inheritDoc} */
   @Override
-  public String getGraph(Job job) throws IOException {
+  public final String getGraph(final Job job) throws IOException {
     return null;
   }
 
+  /** The Class that allows the Column to display in List Views. */
   @Extension
   public static class DescriptorImpl extends ListViewColumnDescriptor {
+    /** {@inheritDoc} */
     @Override
-    public String getDisplayName() {
+    public final String getDisplayName() {
       return Messages.last7DaysBuildsColumnTitle();
     }
 
+    /** {@inheritDoc} */
     @Override
-    public boolean shownByDefault() {
+    public final boolean shownByDefault() {
       return false;
     }
   }
