@@ -63,8 +63,7 @@ public class MetricsActionTest {
   }
 
   @Test
-  public void test_GetMetricMapShouldReturnAMapWithTheMetricsPopulated()
-      throws IOException {
+  public void test_GetMetricMapShouldReturnAMapWithTheMetricsPopulated() throws IOException {
     AbstractProject project = CreateMockProject();
     CreateAMockMTTRPropertiesFileIn(project.getRootDir());
     CreateAMockMTTFPropertiesFileIn(project.getRootDir());
@@ -163,8 +162,7 @@ public class MetricsActionTest {
   }
 
   @Test
-  public void test_ResultColumnsShouldReturnExpectedValues()
-      throws IOException {
+  public void test_ResultColumnsShouldReturnExpectedValues() throws IOException {
     AbstractProject project = CreateMockProject();
     CreateAMockMTTRPropertiesFileIn(project.getRootDir());
 
@@ -192,61 +190,33 @@ public class MetricsActionTest {
     return job;
   }
 
-  private void CreateAMockMTTRPropertiesFileIn(File rootFolder)
-      throws IOException {
-    String s =
-        MetricsAction.MTTR_LAST_7_DAYS + "\t" + EXPECTED_MTTR_7_MILLIS + "\n";
-    s +=
-        MetricsAction.MTTR_LAST_30_DAYS + "\t" + EXPECTED_MTTR_30_MILLIS + "\n";
+  private void CreateAMockMTTRPropertiesFileIn(File rootFolder) throws IOException {
+    String s = MetricsAction.MTTR_LAST_7_DAYS + "\t" + EXPECTED_MTTR_7_MILLIS + "\n";
+    s += MetricsAction.MTTR_LAST_30_DAYS + "\t" + EXPECTED_MTTR_30_MILLIS + "\n";
     s += MetricsAction.MTTR_ALL_BUILDS + "\t" + EXPECTED_MTTR_ALL_MILLIS + "\n";
 
     Files.write(
         s.getBytes(),
-        new File(
-            rootFolder.getAbsolutePath()
-                + File.separator
-                + StoreUtil.MTTR_PROPERTY_FILE));
+        new File(rootFolder.getAbsolutePath() + File.separator + StoreUtil.MTTR_PROPERTY_FILE));
   }
 
-  private void CreateAMockMTTFPropertiesFileIn(File rootFolder)
-      throws IOException {
-    String s =
-        MetricsAction.MTTF_LAST_7_DAYS + "\t" + EXPECTED_MTTF_7_MILLIS + "\n";
-    s +=
-        MetricsAction.MTTF_LAST_30_DAYS + "\t" + EXPECTED_MTTF_30_MILLIS + "\n";
+  private void CreateAMockMTTFPropertiesFileIn(File rootFolder) throws IOException {
+    String s = MetricsAction.MTTF_LAST_7_DAYS + "\t" + EXPECTED_MTTF_7_MILLIS + "\n";
+    s += MetricsAction.MTTF_LAST_30_DAYS + "\t" + EXPECTED_MTTF_30_MILLIS + "\n";
     s += MetricsAction.MTTF_ALL_BUILDS + "\t" + EXPECTED_MTTF_ALL_MILLIS + "\n";
 
     Files.write(
         s.getBytes(),
-        new File(
-            rootFolder.getAbsolutePath()
-                + File.separator
-                + StoreUtil.MTTF_PROPERTY_FILE));
+        new File(rootFolder.getAbsolutePath() + File.separator + StoreUtil.MTTF_PROPERTY_FILE));
   }
 
-  private void CreateAMockStdDevPropertiesFileIn(File rootFolder)
-      throws IOException {
-    String s =
-        MetricsAction.STDDEV_LAST_7_DAYS
-            + "\t"
-            + EXPECTED_STDDEV_7_MILLIS
-            + "\n";
-    s +=
-        MetricsAction.STDDEV_LAST_30_DAYS
-            + "\t"
-            + EXPECTED_STDDEV_30_MILLIS
-            + "\n";
-    s +=
-        MetricsAction.STDDEV_ALL_BUILDS
-            + "\t"
-            + EXPECTED_STDDEV_ALL_MILLIS
-            + "\n";
+  private void CreateAMockStdDevPropertiesFileIn(File rootFolder) throws IOException {
+    String s = MetricsAction.STDDEV_LAST_7_DAYS + "\t" + EXPECTED_STDDEV_7_MILLIS + "\n";
+    s += MetricsAction.STDDEV_LAST_30_DAYS + "\t" + EXPECTED_STDDEV_30_MILLIS + "\n";
+    s += MetricsAction.STDDEV_ALL_BUILDS + "\t" + EXPECTED_STDDEV_ALL_MILLIS + "\n";
 
     Files.write(
         s.getBytes(),
-        new File(
-            rootFolder.getAbsolutePath()
-                + File.separator
-                + StoreUtil.STDDEV_PROPERTY_FILE));
+        new File(rootFolder.getAbsolutePath() + File.separator + StoreUtil.STDDEV_PROPERTY_FILE));
   }
 }

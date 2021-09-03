@@ -64,8 +64,7 @@ public class MTTRMetricTest {
 
   @Test
   public void test_ShouldReturnFailedInfoWhen2FailedAnd1SuccessfulBuild() {
-    List<BuildMessage> builds =
-        Lists.newArrayList(SECOND_BUILD, THIRD_BUILD, FOURTH_BUILD);
+    List<BuildMessage> builds = Lists.newArrayList(SECOND_BUILD, THIRD_BUILD, FOURTH_BUILD);
     runAndVerifyResult(builds, 2000L, 1);
   }
 
@@ -73,31 +72,19 @@ public class MTTRMetricTest {
   public void test_ShouldReturnFailedInfoWhenHaveAllBuild() {
     List<BuildMessage> builds =
         Lists.newArrayList(
-            FIRST_BUILD,
-            SECOND_BUILD,
-            THIRD_BUILD,
-            FOURTH_BUILD,
-            FIFTH_BUILD,
-            SIXTH_BUILD);
+            FIRST_BUILD, SECOND_BUILD, THIRD_BUILD, FOURTH_BUILD, FIFTH_BUILD, SIXTH_BUILD);
     runAndVerifyResult(builds, 1500L, 2);
   }
 
   @Test
-  public void
-      test_ShouldReturnFailedInfoWhenHaveAllBuildsRegardlessOfOrderTheyAreAdded() {
+  public void test_ShouldReturnFailedInfoWhenHaveAllBuildsRegardlessOfOrderTheyAreAdded() {
     List<BuildMessage> builds =
         Lists.newArrayList(
-            SIXTH_BUILD,
-            FIFTH_BUILD,
-            FOURTH_BUILD,
-            THIRD_BUILD,
-            SECOND_BUILD,
-            FIRST_BUILD);
+            SIXTH_BUILD, FIFTH_BUILD, FOURTH_BUILD, THIRD_BUILD, SECOND_BUILD, FIRST_BUILD);
     runAndVerifyResult(builds, 1500L, 2);
   }
 
-  private void runAndVerifyResult(
-      List<BuildMessage> builds, long expectTime, int expectCount) {
+  private void runAndVerifyResult(List<BuildMessage> builds, long expectTime, int expectCount) {
     MTTRMetric mttrMetric = new MTTRMetric("test", builds);
     assertEquals("Metric Name", "test", mttrMetric.getName());
     assertEquals("MTTR Metric", expectTime, mttrMetric.calculateMetric());

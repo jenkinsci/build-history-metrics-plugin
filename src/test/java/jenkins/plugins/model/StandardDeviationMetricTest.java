@@ -64,8 +64,7 @@ public class StandardDeviationMetricTest {
   }
 
   @Test
-  public void
-      test_ShouldReturnStddevWhenHaveAllBuildsRegardlessOfOrderTheyAreAdded() {
+  public void test_ShouldReturnStddevWhenHaveAllBuildsRegardlessOfOrderTheyAreAdded() {
     List<BuildMessage> builds =
         Lists.newArrayList(
             EIGHTH_BUILD,
@@ -84,13 +83,10 @@ public class StandardDeviationMetricTest {
     runAndVerifyResult(Lists.newArrayList(FIRST_BUILD, SECOND_BUILD), 707L, 2);
   }
 
-  private void runAndVerifyResult(
-      List<BuildMessage> builds, long expectTime, int expectCount) {
-    AggregateBuildMetric stddevMetric =
-        new StandardDeviationMetric("test", builds);
+  private void runAndVerifyResult(List<BuildMessage> builds, long expectTime, int expectCount) {
+    AggregateBuildMetric stddevMetric = new StandardDeviationMetric("test", builds);
     assertEquals("Metric Name", "test", stddevMetric.getName());
-    assertEquals(
-        "StandardDeviationMetric", expectTime, stddevMetric.calculateMetric());
+    assertEquals("StandardDeviationMetric", expectTime, stddevMetric.calculateMetric());
     assertEquals("Build Count", expectCount, stddevMetric.getOccurences());
   }
 }

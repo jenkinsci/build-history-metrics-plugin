@@ -7,11 +7,4 @@
                 <goal>hpi:run</goal>
             </goals>
         </action>
-        <action>
-            <actionName>CUSTOM-check</actionName>
-            <displayName>checkstyle:check</displayName>
-            <goals>
-                <goal>check</goal>
-            </goals>
-        </action>
     </actions>

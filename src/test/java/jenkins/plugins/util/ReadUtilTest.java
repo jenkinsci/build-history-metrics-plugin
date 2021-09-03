@@ -29,9 +29,7 @@ public class ReadUtilTest {
   public void test_GetColumnResultEmptyFiles() throws IOException {
     AbstractProject project = CreateMockProject();
 
-    assertEquals(
-        "N/A",
-        ReadUtil.getColumnResult(project, MetricsAction.MTTR_LAST_30_DAYS));
+    assertEquals("N/A", ReadUtil.getColumnResult(project, MetricsAction.MTTR_LAST_30_DAYS));
   }
 
   @Test

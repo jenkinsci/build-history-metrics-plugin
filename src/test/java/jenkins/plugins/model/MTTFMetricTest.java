@@ -58,8 +58,7 @@ public class MTTFMetricTest {
 
   @Test
   public void test_ShouldCorrectMetricWhen2SuccessfulAnd1FailedBuild() {
-    List<BuildMessage> builds =
-        Lists.newArrayList(FIRST_BUILD, FOURTH_BUILD, FIFTH_BUILD);
+    List<BuildMessage> builds = Lists.newArrayList(FIRST_BUILD, FOURTH_BUILD, FIFTH_BUILD);
     runAndVerifyResult(builds, 4000L, 1);
   }
 
@@ -67,39 +66,26 @@ public class MTTFMetricTest {
   public void test_ShouldReturnFailedInfoWhenHaveAllBuilds() {
     List<BuildMessage> builds =
         Lists.newArrayList(
-            FIRST_BUILD,
-            SECOND_BUILD,
-            THIRD_BUILD,
-            FOURTH_BUILD,
-            FIFTH_BUILD,
-            SIXTH_BUILD);
+            FIRST_BUILD, SECOND_BUILD, THIRD_BUILD, FOURTH_BUILD, FIFTH_BUILD, SIXTH_BUILD);
     runAndVerifyResult(builds, 1000L, 2);
   }
 
   @Test
-  public void
-      test_ShouldReturnFailedInfoWhenHaveAllBuildsRegardlessOfOrderTheyAreAdded() {
+  public void test_ShouldReturnFailedInfoWhenHaveAllBuildsRegardlessOfOrderTheyAreAdded() {
     List<BuildMessage> builds =
         Lists.newArrayList(
-            SIXTH_BUILD,
-            FIFTH_BUILD,
-            FOURTH_BUILD,
-            THIRD_BUILD,
-            SECOND_BUILD,
-            FIRST_BUILD);
+            SIXTH_BUILD, FIFTH_BUILD, FOURTH_BUILD, THIRD_BUILD, SECOND_BUILD, FIRST_BUILD);
     runAndVerifyResult(builds, 1000L, 2);
   }
 
   @Test
   public void test_ShouldReturnFailedInfoWhenStartingWithAFailedBuild() {
     List<BuildMessage> builds =
-        Lists.newArrayList(
-            SECOND_BUILD, THIRD_BUILD, FOURTH_BUILD, FIFTH_BUILD, SIXTH_BUILD);
+        Lists.newArrayList(SECOND_BUILD, THIRD_BUILD, FOURTH_BUILD, FIFTH_BUILD, SIXTH_BUILD);
     runAndVerifyResult(builds, 1000L, 1);
   }
 
-  private void runAndVerifyResult(
-      List<BuildMessage> builds, long expectTime, int expectCount) {
+  private void runAndVerifyResult(List<BuildMessage> builds, long expectTime, int expectCount) {
     AggregateBuildMetric mttfMetric = new MTTFMetric("test", builds);
     assertEquals("Metric Name", "test", mttfMetric.getName());
     assertEquals("MTTF Metric", expectTime, mttfMetric.calculateMetric());
