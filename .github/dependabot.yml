@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    # Files stored in repository root
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    target-branch: master
+    reviewers:
+      - mcgin
+    labels:
+      - dependencies
+      - skip-changelog
