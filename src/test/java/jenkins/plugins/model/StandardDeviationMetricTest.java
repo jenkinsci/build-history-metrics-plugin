@@ -57,8 +57,41 @@ public class StandardDeviationMetricTest {
         runAndVerifyResult(Lists.newArrayList(FIRST_BUILD, SECOND_BUILD), 707L, 2);
     }
 
+    @Test
+    public void should_return_correct_stddev_with_multiple_builds() {
+        StandardDeviationMetric.Builder builder = StandardDeviationMetric.newBuilderFor("test");
+        builder.addMessage(FIRST_BUILD);
+        verifyResult(builder.build(), 0, 1);
+
+        builder.addMessage(SECOND_BUILD);
+        verifyResult(builder.build(), 707, 2);
+
+        builder.addMessage(THIRD_BUILD);
+        verifyResult(builder.build(), 1000, 3);
+
+        builder.addMessage(FOURTH_BUILD);
+        verifyResult(builder.build(), 1290, 4);
+
+        builder.addMessage(FIFTH_BUILD);
+        verifyResult(builder.build(), 1581, 5);
+
+        builder.addMessage(SIXTH_BUILD);
+        verifyResult(builder.build(), 1870, 6);
+
+        builder.addMessage(SEVENTH_BUILD);
+        verifyResult(builder.build(), 2160, 7);
+
+        builder.addMessage(EIGHTH_BUILD);
+        verifyResult(builder.build(), 2449, 8);
+
+    }
+
     private void runAndVerifyResult(List<BuildMessage> builds, long expectTime, int expectCount) {
         AggregateBuildMetric stddevMetric = new StandardDeviationMetric("test", builds);
+        verifyResult(stddevMetric, expectTime, expectCount);
+    }
+
+    private void verifyResult(AggregateBuildMetric stddevMetric, long expectTime, int expectCount) {
         assertEquals("Metric Name", "test", stddevMetric.getName());
         assertEquals("StandardDeviationMetric", expectTime, stddevMetric.calculateMetric());
         assertEquals("Build Count", expectCount, stddevMetric.getOccurences());

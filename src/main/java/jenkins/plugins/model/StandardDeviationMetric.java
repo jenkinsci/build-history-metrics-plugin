@@ -21,6 +21,12 @@ public class StandardDeviationMetric implements AggregateBuildMetric {
         metric = (long) statistics.getStandardDeviation();
     }
 
+    private StandardDeviationMetric(String name, long metric, int occurences) {
+        this.name = name;
+        this.metric = metric;
+        this.occurences = occurences;
+    }
+
     @Override
     public int getOccurences() {
         return occurences;
@@ -34,5 +40,28 @@ public class StandardDeviationMetric implements AggregateBuildMetric {
     @Override
     public String getName() {
         return name;
+    }
+
+    public static Builder newBuilderFor(String name) {
+       return new Builder(name); 
+    }
+    
+    public static class Builder {
+        private final SummaryStatistics statistics = new SummaryStatistics();
+        private final String name;
+
+        private Builder(String name) {
+            this.name = name;
+        }
+
+        public void addMessage(BuildMessage message) {
+            statistics.addValue(message.getDuration());
+        }
+
+        public StandardDeviationMetric build() {
+            return new StandardDeviationMetric(name, 
+                    (long) statistics.getStandardDeviation(),
+                    Math.toIntExact(statistics.getN()));
+        }
     }
 }
