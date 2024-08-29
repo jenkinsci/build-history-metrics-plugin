@@ -1,7 +1,7 @@
 package jenkins.plugins.mttr;
 
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlPage;
 import com.google.common.io.Files;
 import hudson.Launcher;
 import hudson.model.*;
@@ -77,9 +77,9 @@ public class IntegrationTest {
     private HtmlElement verifyMetricRow(HtmlElement metricsTable, String metricElementIdentifier, String expectedLabel) {
         HtmlElement row = metricsTable.getOneHtmlElementByAttribute("tr", "id", metricElementIdentifier);
         assertEquals(metricElementIdentifier + "Metric should be in a row", row.getNodeName(), "tr");
-        String label = row.getOneHtmlElementByAttribute("td", "class", "metric-label").getTextContent();
+        String label = row.getOneHtmlElementByAttribute("td", "class", "jenkins-table__cell metric-label").getTextContent();
         assertEquals(metricElementIdentifier + "Metric labeled incorrectly", expectedLabel, label);
-        String value = row.getOneHtmlElementByAttribute("td", "class", "metric-value").getTextContent();
+        String value = row.getOneHtmlElementByAttribute("td", "class", "jenkins-table__cell metric-value").getTextContent();
         assertNotEquals("Metric value should be set", 0, value.length());
         assertNotEquals("Metric value should not be zero", "0", value);
         return metricsTable;

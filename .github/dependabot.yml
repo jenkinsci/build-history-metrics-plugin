@@ -1,14 +1,12 @@
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates
+
 version: 2
 updates:
-  - package-ecosystem: "maven"
-    # Files stored in repository root
-    directory: "/"
+  - package-ecosystem: maven
+    directory: /
     schedule:
-      interval: "monthly"
-    open-pull-requests-limit: 5
-    target-branch: master
-    reviewers:
-      - mcgin
-    labels:
-      - dependencies
-      - skip-changelog
+      interval: monthly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

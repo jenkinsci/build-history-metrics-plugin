@@ -1,68 +1,48 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-
-    <style>
-        #aggregate-build-metrics {
-            margin-top: 1em;
-            margin-left:1em;
-            border: solid;
-            border-collapse: collapse;
-        }
-        #aggregate-build-metrics td {
-            padding-top: 5px;
-            padding-bottom: 5px;
-            padding-left: 15px;
-            padding-right: 15px;
-            border: solid thin;
-        }
-
-        .all-time {
-            border-bottom: solid;
-        }
-    </style>
-
-    <table id="aggregate-build-metrics">
-            <tbody>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
+        <l:main-panel>
+            <table style="width:30%" id="aggregate-build-metrics" class="jenkins-table">
+                <tbody>
                     <tr id="mttrLast7days" class="mttr 7day">
-                        <th rowspan="3">MTTR</th>
-                        <td class="metric-label">Last 7 Days</td>
-                        <td class="metric-value">${it.getMetricMap().get("mttrLast7days")}</td>
+                        <th rowspan="3" scope="row">MTTR</th>
+                        <td class="jenkins-table__cell metric-label">Last 7 Days</td>
+                        <td class="jenkins-table__cell metric-value">${it.getMetricMap().get("mttrLast7days")}</td>
                     </tr>
                     <tr id="mttrLast30days" class="mttr 30day">
-                        <td class="metric-label">Last 30 Days</td>
-                        <td class="metric-value">${it.getMetricMap().get("mttrLast30days")}</td>
+                        <td class="jenkins-table__cell metric-label">Last 30 Days</td>
+                        <td class="jenkins-table__cell metric-value">${it.getMetricMap().get("mttrLast30days")}</td>
                     </tr>
                     <tr id="mttrAllBuilds" class="mttr all-time">
-                        <td class="metric-label">All Time</td>
-                        <td class="metric-value">${it.getMetricMap().get("mttrAllBuilds")}</td>
+                        <td class="jenkins-table__cell metric-label">All Time</td>
+                        <td class="jenkins-table__cell metric-value">${it.getMetricMap().get("mttrAllBuilds")}</td>
                     </tr>
                     <tr id="mttfLast7days" class="mttf 7day">
-                        <th rowspan="3">MTTF</th>
-                        <td class="metric-label">Last 7 Days</td>
-                        <td class="metric-value">${it.getMetricMap().get("mttfLast7days")}</td>
+                        <th rowspan="3" scope="row">MTTF</th>
+                        <td class="jenkins-table__cell metric-label">Last 7 Days</td>
+                        <td class="jenkins-table__cell metric-value">${it.getMetricMap().get("mttfLast7days")}</td>
                     </tr>
                     <tr id="mttfLast30days" class="mttf 30day">
-                        <td class="metric-label">Last 30 Days</td>
-                        <td class="metric-value">${it.getMetricMap().get("mttfLast30days")}</td>
+                        <td class="jenkins-table__cell metric-label">Last 30 Days</td>
+                        <td class="jenkins-table__cell metric-value">${it.getMetricMap().get("mttfLast30days")}</td>
                     </tr>
                     <tr id="mttfAllBuilds" class="mttf all-time">
-                        <td class="metric-label">All Time</td>
-                        <td class="metric-value">${it.getMetricMap().get("mttfAllBuilds")}</td>
+                        <td class="jenkins-table__cell metric-label">All Time</td>
+                        <td class="jenkins-table__cell metric-value">${it.getMetricMap().get("mttfAllBuilds")}</td>
                     </tr>
                     <tr id="stddevLast7days" class="stddev 7day">
-                        <th rowspan="3">Standard Deviation</th>
-                        <td class="metric-label">Last 7 Days</td>
-                        <td class="metric-value">${it.getMetricMap().get("stddevLast7days")}</td>
+                        <th rowspan="3" scope="row">Standard Deviation</th>
+                        <td class="jenkins-table__cell metric-label">Last 7 Days</td>
+                        <td class="jenkins-table__cell metric-value">${it.getMetricMap().get("stddevLast7days")}</td>
                     </tr>
                     <tr id="stddevLast30days" class="stddev 30day">
-                        <td class="metric-label">Last 30 Days</td>
-                        <td class="metric-value">${it.getMetricMap().get("stddevLast30days")}</td>
+                        <td class="jenkins-table__cell metric-label">Last 30 Days</td>
+                        <td class="jenkins-table__cell metric-value">${it.getMetricMap().get("stddevLast30days")}</td>
                     </tr>
                     <tr id="stddevAllBuilds" class="stddev all-time">
-                        <td class="metric-label">All Time</td>
-                        <td class="metric-value">${it.getMetricMap().get("stddevAllBuilds")}</td>
+                        <td class="jenkins-table__cell metric-label">All Time</td>
+                        <td class="jenkins-table__cell metric-value">${it.getMetricMap().get("stddevAllBuilds")}</td>
                     </tr>
-            </tbody>
-        </table>
-
+                </tbody>
+            </table>
+        </l:main-panel>
 </j:jelly>
