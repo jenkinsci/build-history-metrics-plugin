@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.88</version>
+        <version>5.2</version>
         <relativePath />
     </parent>
 
@@ -12,15 +12,15 @@
     <packaging>hpi</packaging>
     <name>Build History Metrics plugin</name>
     <description>Provides build metrics that encompass the history of all the runs</description>
-    <url>https://github.com/jenkinsci/build-history-metrics-plugin</url>
+    <url>https://github.com/${gitHubRepo}</url>
 
     <properties>
         <changelist>999999-SNAPSHOT</changelist>
         <checkstyle.skip>true</checkstyle.skip>
         <requiredcoverage>1.0</requiredcoverage>
         <gitHubRepo>jenkinsci/${project.artifactId}</gitHubRepo>
-        <jenkins.baseline>2.452</jenkins.baseline>
-        <jenkins.version>${jenkins.baseline}.4</jenkins.version>
+        <jenkins.baseline>2.479</jenkins.baseline>
+        <jenkins.version>${jenkins.baseline}.1</jenkins.version>
     </properties>
 
     <dependencyManagement>
