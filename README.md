@@ -4,7 +4,9 @@ Jenkins Build History Metrics Plugin
 [![Build Status](https://ci.jenkins.io/job/Plugins/job/build-history-metrics-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/build-history-metrics-plugin/job/master/)
 
 This plugin calculates the following metrics for all of your builds once
-installed:
+installed
+
+The plugin doesn't support pipeline jobs (contributions are welcome).
 
 -   Mean Time To Failure (MTTF)
 -   Mean Time To Recovery (MTTR)
@@ -12,8 +14,13 @@ installed:
 
 The calculated metrics are displayed in a table on each jobs page
 showing the metric for the last 7 days, last 30 days and all time.  The
-table looks something like this:  
-![](https://wiki.jenkins.io/download/attachments/74417004/build-history-metrics-plugin-table.jpg?version=1&modificationDate=1433604472000&api=v2)
+table looks something like this:
+
+![](docs/table.png)
+
+The plugin also add new column definitions
+
+![](docs/columns.png)
 
 ## Changelog
 
