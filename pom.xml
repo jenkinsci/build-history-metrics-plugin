@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>5.6</version>
+        <version>5.7</version>
         <relativePath />
     </parent>
 
@@ -19,6 +19,7 @@
         <checkstyle.skip>true</checkstyle.skip>
         <requiredcoverage>1.0</requiredcoverage>
         <gitHubRepo>jenkinsci/${project.artifactId}</gitHubRepo>
+        <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.baseline>2.479</jenkins.baseline>
         <jenkins.version>${jenkins.baseline}.1</jenkins.version>
     </properties>
@@ -59,7 +60,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
