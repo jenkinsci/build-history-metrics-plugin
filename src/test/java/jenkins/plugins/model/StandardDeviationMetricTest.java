@@ -2,16 +2,15 @@ package jenkins.plugins.model;
 
 import com.google.common.collect.Lists;
 import hudson.model.Result;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StandardDeviationMetricTest {
+class StandardDeviationMetricTest {
+
     private static final long TODAY = new Date().getTime();
     private static final BuildMessage FIRST_BUILD = new BuildMessage(1, TODAY, 1500, Result.SUCCESS.toString());
     private static final BuildMessage SECOND_BUILD = new BuildMessage(2, TODAY + 1000, 2500, Result.FAILURE.toString());
@@ -24,41 +23,45 @@ public class StandardDeviationMetricTest {
 
 
     @Test
-    public void should_return_0_seconds_when_first_success_build() {
+    void should_return_0_seconds_when_first_success_build() {
         runAndVerifyResult(Lists.newArrayList(FIRST_BUILD), 0, 1);
     }
+
     @Test
-    public void should_return_0_seconds_when_first_failure_build() {
+    void should_return_0_seconds_when_first_failure_build() {
         runAndVerifyResult(Lists.newArrayList(SECOND_BUILD), 0, 1);
     }
+
     @Test
-    public void should_return_0_seconds_when_first_aborted_build() {
+    void should_return_0_seconds_when_first_aborted_build() {
         runAndVerifyResult(Lists.newArrayList(SEVENTH_BUILD), 0, 1);
     }
+
     @Test
-    public void should_return_0_seconds_when_first_unstable_build() {
+    void should_return_0_seconds_when_first_unstable_build() {
         runAndVerifyResult(Lists.newArrayList(EIGHTH_BUILD), 0, 1);
     }
+
     @Test
-    public void should_return_correct_stddev_with_8_builds() {
+    void should_return_correct_stddev_with_8_builds() {
         runAndVerifyResult(Lists.newArrayList(FIRST_BUILD, SECOND_BUILD,THIRD_BUILD, FOURTH_BUILD,
                 FIFTH_BUILD,SIXTH_BUILD,SEVENTH_BUILD,EIGHTH_BUILD), 2449, 8);
     }
 
     @Test
-    public void should_return_stddev_when_have_all_builds_regardless_of_order_they_are_added() {
+    void should_return_stddev_when_have_all_builds_regardless_of_order_they_are_added() {
         List<BuildMessage> builds = Lists.newArrayList( EIGHTH_BUILD, SEVENTH_BUILD, SIXTH_BUILD,
                 FIFTH_BUILD, FOURTH_BUILD, THIRD_BUILD, SECOND_BUILD, FIRST_BUILD);
         runAndVerifyResult(builds, 2449, 8);
     }
 
     @Test
-    public void should_return_correct_stddev_with_2_builds() {
+    void should_return_correct_stddev_with_2_builds() {
         runAndVerifyResult(Lists.newArrayList(FIRST_BUILD, SECOND_BUILD), 707L, 2);
     }
 
     @Test
-    public void should_return_correct_stddev_with_multiple_builds() {
+    void should_return_correct_stddev_with_multiple_builds() {
         StandardDeviationMetric.Builder builder = StandardDeviationMetric.newBuilderFor("test");
         builder.addMessage(FIRST_BUILD);
         verifyResult(builder.build(), 0, 1);
@@ -92,8 +95,8 @@ public class StandardDeviationMetricTest {
     }
 
     private void verifyResult(AggregateBuildMetric stddevMetric, long expectTime, int expectCount) {
-        assertEquals("Metric Name", "test", stddevMetric.getName());
-        assertEquals("StandardDeviationMetric", expectTime, stddevMetric.calculateMetric());
-        assertEquals("Build Count", expectCount, stddevMetric.getOccurences());
+        assertEquals("test", stddevMetric.getName(), "Metric Name");
+        assertEquals(expectTime, stddevMetric.calculateMetric(), "StandardDeviationMetric");
+        assertEquals(expectCount, stddevMetric.getOccurences(), "Build Count");
     }
 }

@@ -4,14 +4,15 @@ import hudson.model.Result;
 import jenkins.plugins.model.BuildMessage;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYDataset;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GraphUtilTest {
+class GraphUtilTest {
+
     private static final long TODAY = new Date().getTime();
     private static final BuildMessage FIRST_BUILD = new BuildMessage(1, TODAY, 1500, Result.SUCCESS.toString());
     private static final BuildMessage SECOND_BUILD = new BuildMessage(2, TODAY + 1000, 2500, Result.FAILURE.toString());
@@ -22,9 +23,10 @@ public class GraphUtilTest {
     private static final BuildMessage SEVENTH_BUILD = new BuildMessage(7, TODAY + 7000, 7500, Result.ABORTED.toString());
     private static final BuildMessage EIGHTH_BUILD = new BuildMessage(8, TODAY + 8000, 8500, Result.UNSTABLE.toString());
 
+
     @Test
-    public void should_return_graph_data() {
-        JFreeChart chart = GraphUtil.generateStdDevGraph("test", 
+    void should_return_graph_data() {
+        JFreeChart chart = GraphUtil.generateStdDevGraph("test",
                 Arrays.asList(FIRST_BUILD, SECOND_BUILD, THIRD_BUILD, FOURTH_BUILD, FIFTH_BUILD, SIXTH_BUILD, SEVENTH_BUILD, EIGHTH_BUILD));
         XYDataset dataset = chart.getXYPlot().getDataset();
         assertEquals(8, dataset.getItemCount(0));
