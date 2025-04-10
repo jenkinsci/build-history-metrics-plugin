@@ -9,9 +9,9 @@ import jenkins.plugins.model.MTTFMetric;
 import jenkins.plugins.model.MTTRMetric;
 import jenkins.plugins.model.StandardDeviationMetric;
 import org.jfree.chart.JFreeChart;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.CleanupMode;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.*;
 
 import java.awt.image.BufferedImage;
@@ -21,15 +21,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class StoreUtilTest {
+class StoreUtilTest {
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @TempDir(cleanup = CleanupMode.NEVER)
+    private File temporaryFolder;
 
-    public File createTempFileWithLines(int lines) throws IOException {
-        File existingFile = temporaryFolder.newFile();
+
+    private File createTempFileWithLines(int lines) throws IOException {
+        File existingFile = File.createTempFile("junit", null, temporaryFolder);
         BufferedWriter out = new BufferedWriter(new FileWriter(existingFile));
         for(int i=0; i<lines; i++) {
             out.write("blah\n");
@@ -38,9 +39,8 @@ public class StoreUtilTest {
         return existingFile;
     }
 
-
     @Test
-    public void StoreBuildMessages_ShouldAppendTheData_whenTheFileExists()
+    void StoreBuildMessages_ShouldAppendTheData_whenTheFileExists()
             throws Exception {
         //Arrange
         Calendar timestamp = Calendar.getInstance();
@@ -60,17 +60,15 @@ public class StoreUtilTest {
         String storedString = getLineFromFile(existingFile, 3);
         int linesInFile = getLinesInFile(existingFile);
 
-        assertEquals("The file should have 3 lines",
-                3, linesInFile);
-        assertEquals("The data should be in the form BUILDNUMBER,STARTTIMEINMILLIS,DURATIONINMILLIS,RESULT",
-                "123,5678,5000,FAILURE", storedString);
+        assertEquals(3, linesInFile, "The file should have 3 lines");
+        assertEquals("123,5678,5000,FAILURE", storedString, "The data should be in the form BUILDNUMBER,STARTTIMEINMILLIS,DURATIONINMILLIS,RESULT");
     }
 
     @Test
-    public void StoreBuildMessages_ShouldIncludeAllJobsFromParent_whenTheFileDoesNotExist()
+    void StoreBuildMessages_ShouldIncludeAllJobsFromParent_whenTheFileDoesNotExist()
             throws Exception {
         //Arrange
-        File deletedFile = temporaryFolder.newFile();
+        File deletedFile = File.createTempFile("junit", null, temporaryFolder);
         deletedFile.delete();
 
         Calendar timestamp = Calendar.getInstance();
@@ -91,7 +89,7 @@ public class StoreUtilTest {
         Mockito.when(build2.getTimestamp()).thenReturn(timestamp2);
 
         Job job = Mockito.mock(Job.class);
-        ArrayList<AbstractBuild> list = new ArrayList<AbstractBuild>();
+        ArrayList<AbstractBuild> list = new ArrayList<>();
         list.add(build);
         list.add(build2);
 
@@ -99,7 +97,7 @@ public class StoreUtilTest {
         Mockito.when(build.getParent()).thenReturn(job);
 
         //Act
-        assertFalse("The file should not exist before the test runs",deletedFile.exists());
+        assertFalse(deletedFile.exists(),"The file should not exist before the test runs");
         StoreUtil.storeBuildMessages(deletedFile, build);
 
         //Assert
@@ -108,18 +106,15 @@ public class StoreUtilTest {
 
         int linesInFile = getLinesInFile(deletedFile);
 
-        assertEquals("The file should have 2 lines",
-                2, linesInFile);
-        assertEquals("The data for the first build is not correct",
-                "34,12,56,FAILURE", firstBuild);
-        assertEquals("The data for the second build is not correct",
-                "89,67,10,SUCCESS", secondBuild);
+        assertEquals(2, linesInFile, "The file should have 2 lines");
+        assertEquals("34,12,56,FAILURE", firstBuild, "The data for the first build is not correct");
+        assertEquals("89,67,10,SUCCESS", secondBuild, "The data for the second build is not correct");
     }
 
     @Test
-    public void testStoreMTTRInfo() throws Exception {
+    void testStoreMTTRInfo() throws Exception {
         //Arrange
-        File rootFolder = temporaryFolder.newFolder();
+        File rootFolder = newFolder(temporaryFolder, "junit");
 
         Job job = Mockito.mock(Job.class);
         Mockito.when(job.getRootDir()).thenReturn(rootFolder);
@@ -141,19 +136,19 @@ public class StoreUtilTest {
         //Assert
 
         File propertiesFile = new File(rootFolder.getAbsolutePath() + File.separator + "mttr.properties");
-        assertTrue("The mttr.properties file is missing",
-                propertiesFile.exists() );
+        assertTrue(propertiesFile.exists(),
+                "The mttr.properties file is missing" );
 
         List<String> lines = Files.readLines(propertiesFile, Charset.defaultCharset());
-        assertEquals("Should have only 2 lines",2,lines.size());
-        assertEquals("The first  MTTR metric is wrong","last7=76543210",lines.get(0));
-        assertEquals("The second  MTTR metric is wrong","last30=3210",lines.get(1));
+        assertEquals(2,lines.size(),"Should have only 2 lines");
+        assertEquals("last7=76543210",lines.get(0),"The first  MTTR metric is wrong");
+        assertEquals("last30=3210",lines.get(1),"The second  MTTR metric is wrong");
     }
 
     @Test
-    public void testStorStdDevInfo() throws Exception {
+    void testStorStdDevInfo() throws Exception {
         //Arrange
-        File rootFolder = temporaryFolder.newFolder();
+        File rootFolder = newFolder(temporaryFolder, "junit");
 
         Job job = Mockito.mock(Job.class);
         Mockito.when(job.getRootDir()).thenReturn(rootFolder);
@@ -175,19 +170,19 @@ public class StoreUtilTest {
         //Assert
 
         File propertiesFile = new File(rootFolder.getAbsolutePath() + File.separator + "stddev.properties");
-        assertTrue("The stddev.properties file is missing",
-                propertiesFile.exists() );
+        assertTrue(propertiesFile.exists(),
+                "The stddev.properties file is missing" );
 
         List<String> lines = Files.readLines(propertiesFile, Charset.defaultCharset());
-        assertEquals("Should have only 2 lines",2,lines.size());
-        assertEquals("The first  stddev metric is wrong","last7=76543210",lines.get(0));
-        assertEquals("The second  stddev metric is wrong","last30=3210",lines.get(1));
+        assertEquals(2,lines.size(),"Should have only 2 lines");
+        assertEquals("last7=76543210",lines.get(0),"The first  stddev metric is wrong");
+        assertEquals("last30=3210",lines.get(1),"The second  stddev metric is wrong");
     }
 
     @Test
-    public void testStoreMTTFInfo() throws Exception {
+    void testStoreMTTFInfo() throws Exception {
         //Arrange
-        File rootFolder = temporaryFolder.newFolder();
+        File rootFolder = newFolder(temporaryFolder, "junit");
 
         Job job = Mockito.mock(Job.class);
         Mockito.when(job.getRootDir()).thenReturn(rootFolder);
@@ -208,19 +203,19 @@ public class StoreUtilTest {
 
         //Assert
         File propertiesFile = new File(rootFolder.getAbsolutePath() + File.separator + "mttf.properties");
-        assertTrue("The mttf.properties file is missing: "+ propertiesFile.toString(),
-                propertiesFile.exists() );
+        assertTrue(propertiesFile.exists(),
+                "The mttf.properties file is missing: "+ propertiesFile);
 
         List<String> lines = Files.readLines(propertiesFile, Charset.defaultCharset());
-        assertEquals("Should have only 2 lines",2,lines.size());
-        assertEquals("The first MTTF metric is wrong","last7=76543210",lines.get(0));
-        assertEquals("The second  MTTF metric is wrong","last30=3210",lines.get(1));
+        assertEquals(2,lines.size(),"Should have only 2 lines");
+        assertEquals("last7=76543210",lines.get(0),"The first MTTF metric is wrong");
+        assertEquals("last30=3210",lines.get(1),"The second  MTTF metric is wrong");
     }
 
     @Test
-    public void testStoreGraph() throws Exception {
+    void testStoreGraph() throws Exception {
         //Arrange
-        File rootFolder = temporaryFolder.newFolder();
+        File rootFolder = newFolder(temporaryFolder, "junit");
 
         Job job = Mockito.mock(Job.class);
         Mockito.when(job.getRootDir()).thenReturn(rootFolder);
@@ -235,8 +230,8 @@ public class StoreUtilTest {
 
         //Assert
         File graphFile = new File(rootFolder.getAbsolutePath() + File.separator + "mttf.jpg");
-        assertTrue("The mttf.jpg file is missing: " + graphFile.toString(),
-                graphFile.exists());
+        assertTrue(graphFile.exists(),
+                "The mttf.jpg file is missing: " + graphFile);
     }
 
     private int getLinesInFile(File file) throws IOException {
@@ -252,5 +247,14 @@ public class StoreUtilTest {
             s = lnr.readLine();
         } while (--i>0);
         return (s);
+    }
+
+    private static File newFolder(File root, String... subDirs) throws IOException {
+        String subFolder = String.join("/", subDirs);
+        File result = new File(root, subFolder);
+        if (!result.mkdirs()) {
+            throw new IOException("Couldn't create folders " + root);
+        }
+        return result;
     }
 }

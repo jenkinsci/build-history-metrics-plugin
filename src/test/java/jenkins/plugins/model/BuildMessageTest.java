@@ -1,16 +1,17 @@
 package jenkins.plugins.model;
 
 import hudson.model.Result;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by aidan on 12/10/14.
  */
-public class BuildMessageTest {
+class BuildMessageTest {
 
     private static final long TODAY = new Date().getTime();
     private static final BuildMessage FIRST_BUILD = new BuildMessage(1, TODAY, 1500, Result.SUCCESS.toString());
@@ -20,12 +21,14 @@ public class BuildMessageTest {
     private static final BuildMessage FIFTH_BUILD = new BuildMessage(5, TODAY + 4000, 5500, Result.FAILURE.toString());
     private static final BuildMessage SIXTH_BUILD = new BuildMessage(6, TODAY + 5000, 6500, Result.SUCCESS.toString());
 
+
     @Test
-    public void FirstBuildShouldBeTheSameAsFirstBuildWhenCompared() {
-        assertTrue(FIRST_BUILD.compareTo(FIRST_BUILD)==0);
+    void FirstBuildShouldBeTheSameAsFirstBuildWhenCompared() {
+        assertEquals(0, FIRST_BUILD.compareTo(FIRST_BUILD));
     }
+
     @Test
-    public void SecondBuildShouldBeGreaterThanFirstBuildWhenCompared() {
+    void SecondBuildShouldBeGreaterThanFirstBuildWhenCompared() {
         assertTrue(FIRST_BUILD.compareTo(SECOND_BUILD)<0);
         assertTrue(SECOND_BUILD.compareTo(FIRST_BUILD)>0);
     }

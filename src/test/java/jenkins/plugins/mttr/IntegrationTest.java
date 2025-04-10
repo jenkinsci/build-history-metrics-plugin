@@ -7,37 +7,38 @@ import hudson.Launcher;
 import hudson.model.*;
 import hudson.tasks.Shell;
 import jenkins.plugins.util.StoreUtil;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static jenkins.plugins.util.StoreUtil.UTF_8;
-import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class IntegrationTest {
+@WithJenkins
+class IntegrationTest {
 
     private FreeStyleProject project;
     private String rootDirectory;
+    private JenkinsRule jenkins;
 
-    @Rule
-    public JenkinsRule jenkins = new JenkinsRule();
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp(JenkinsRule rule) throws Exception {
+        jenkins = rule;
         project = jenkins.getInstance().createProject(FreeStyleProject.class, "test");
         rootDirectory = project.getRootDir() + File.separator;
     }
+
     private TestBuilder getTestBuilder() {
         return new TestBuilder() {
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
@@ -47,8 +48,9 @@ public class IntegrationTest {
             }
         };
     }
+
     @Test
-    public void ShouldRenderTheMetricsInATable() throws Exception {
+    void ShouldRenderTheMetricsInATable() throws Exception {
         project.getBuildersList().add(new Shell("return `expr $BUILD_NUMBER % 2`"));
         project.getBuildersList().add(getTestBuilder());
 
@@ -59,7 +61,7 @@ public class IntegrationTest {
 
         HtmlPage page = jenkins.createWebClient().goTo("job/test/");
         HtmlElement metricsTable = page.getHtmlElementById("aggregate-build-metrics");
-        assertEquals("Metrics should be in a table", metricsTable.getNodeName(), "table");
+        assertEquals("table", metricsTable.getNodeName(), "Metrics should be in a table");
 
         verifyMetricRow(metricsTable, MetricsAction.MTTF_LAST_7_DAYS, "Last 7 Days");
         verifyMetricRow(metricsTable, MetricsAction.MTTF_LAST_30_DAYS, "Last 30 Days");
@@ -76,24 +78,23 @@ public class IntegrationTest {
 
     private HtmlElement verifyMetricRow(HtmlElement metricsTable, String metricElementIdentifier, String expectedLabel) {
         HtmlElement row = metricsTable.getOneHtmlElementByAttribute("tr", "id", metricElementIdentifier);
-        assertEquals(metricElementIdentifier + "Metric should be in a row", row.getNodeName(), "tr");
+        assertEquals("tr", row.getNodeName(), metricElementIdentifier + "Metric should be in a row");
         String label = row.getOneHtmlElementByAttribute("td", "class", "jenkins-table__cell metric-label").getTextContent();
-        assertEquals(metricElementIdentifier + "Metric labeled incorrectly", expectedLabel, label);
+        assertEquals(expectedLabel, label, metricElementIdentifier + "Metric labeled incorrectly");
         String value = row.getOneHtmlElementByAttribute("td", "class", "jenkins-table__cell metric-value").getTextContent();
-        assertNotEquals("Metric value should be set", 0, value.length());
-        assertNotEquals("Metric value should not be zero", "0", value);
+        assertNotEquals(0, value.length(), "Metric value should be set");
+        assertNotEquals("0", value, "Metric value should not be zero");
         return metricsTable;
     }
 
-
     @Test
-    public void should_store_build_message_file_correctly() throws Exception {
+    void should_store_build_message_file_correctly() throws Exception {
         project.scheduleBuild2(0).get();
 
         File buildsMessageFile = new File(rootDirectory + MetricsAction.ALL_BUILDS_FILE_NAME);
         assertTrue(buildsMessageFile.exists());
 
-        List<String> lines = Files.readLines(buildsMessageFile, Charset.forName(UTF_8));
+        List<String> lines = Files.readLines(buildsMessageFile, StandardCharsets.UTF_8);
 
         String[] line1 = lines.get(0).split(",");
         assertThat("Build number", line1[0], is("1"));
@@ -101,7 +102,7 @@ public class IntegrationTest {
 
         project.scheduleBuild2(1).get();
 
-        lines = Files.readLines(buildsMessageFile, Charset.forName(UTF_8));
+        lines = Files.readLines(buildsMessageFile, StandardCharsets.UTF_8);
         line1 = lines.get(0).split(",");
         String[] line2 = lines.get(1).split(",");
         assertThat(lines.size(), is(2));
@@ -112,7 +113,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void should_store_properties_files_correctly() throws Exception {
+    void should_store_properties_files_correctly() throws Exception {
         project.scheduleBuild2(0).get();
 
         File mttrPropertyFile = new File(rootDirectory + StoreUtil.MTTR_PROPERTY_FILE);
@@ -124,9 +125,9 @@ public class IntegrationTest {
         File stdDevPropertyFile = new File(rootDirectory + StoreUtil.STDDEV_PROPERTY_FILE);
         assertTrue(stdDevPropertyFile.exists());
 
-        List<String> mttrLines = Files.readLines(mttrPropertyFile, Charset.forName(UTF_8));
-        List<String> mttfLines = Files.readLines(mttfPropertyFile, Charset.forName(UTF_8));
-        List<String> stdDevLines = Files.readLines(stdDevPropertyFile, Charset.forName(UTF_8));
+        List<String> mttrLines = Files.readLines(mttrPropertyFile, StandardCharsets.UTF_8);
+        List<String> mttfLines = Files.readLines(mttfPropertyFile, StandardCharsets.UTF_8);
+        List<String> stdDevLines = Files.readLines(stdDevPropertyFile, StandardCharsets.UTF_8);
 
         assertThat(mttrLines.get(0), is(String.format("%s=0", MetricsAction.MTTR_LAST_7_DAYS)));
         assertThat(mttrLines.get(1), is(String.format("%s=0", MetricsAction.MTTR_LAST_30_DAYS)));
@@ -142,7 +143,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void should_store_all_build_messages_when_build_message_file_does_not_exist() throws Exception {
+    void should_store_all_build_messages_when_build_message_file_does_not_exist() throws Exception {
         project.scheduleBuild2(0).get();
 
         File buildsMessageFile = new File(rootDirectory + MetricsAction.ALL_BUILDS_FILE_NAME);
@@ -151,7 +152,7 @@ public class IntegrationTest {
         project.scheduleBuild2(0).get();
 
         assertTrue(buildsMessageFile.exists());
-        List<String> lines = Files.readLines(buildsMessageFile, Charset.forName(UTF_8));
+        List<String> lines = Files.readLines(buildsMessageFile, StandardCharsets.UTF_8);
         assertThat(lines.size(), is(2));
     }
 }
