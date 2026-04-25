@@ -1,9 +1,6 @@
 Jenkins Build History Metrics Plugin
 ======================================
 
-[![Build Status](https://ci.jenkins.io/job/Plugins/job/build-history-metrics-plugin/job/main/badge/icon)](https://ci.jenkins.io/job/Plugins/job/build-history-metrics-plugin/job/main/)
-[![Coverage](https://ci.jenkins.io/job/Plugins/job/build-history-metrics-plugin/job/main/badge/icon?status=${instructionCoverage}&subject=coverage&color=${colorInstructionCoverage})](https://ci.jenkins.io/job/Plugins/job/build-history-metrics-plugin/job/main)
-[![LOC](https://ci.jenkins.io/job/Plugins/job/build-history-metrics-plugin/job/main/badge/icon?job=test&status=${lineOfCode}&subject=line%20of%20code&color=blue)](https://ci.jenkins.io/job/Plugins/job/build-history-metrics-plugin/job/main)
 ![Contributors](https://img.shields.io/github/contributors/jenkinsci/build-history-metrics-plugin.svg?color=blue)
 [![GitHub release](https://img.shields.io/github/release/jenkinsci/build-history-metrics-plugin.svg?label=changelog)](https://github.com/jenkinsci/build-history-metrics-plugin/releases/latest)
 [![Jenkins Plugin Installs](https://img.shields.io/jenkins/plugin/i/build-history-metrics-plugin.svg?color=blue)](https://plugins.jenkins.io/build-history-metrics-plugin)
